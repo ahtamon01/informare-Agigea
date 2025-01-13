@@ -3,59 +3,198 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raport Trimis cu Succes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f2f5;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
         }
-        .success-container {
-            text-align: center;
-            padding: 40px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 500px;
-        }
-        .success-icon {
-            color: #4CAF50;
-            font-size: 48px;
+        .form-group {
             margin-bottom: 20px;
         }
-        h1 {
-            color: #333;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 100px;
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 15px;
             margin-bottom: 20px;
+            border-radius: 4px;
         }
-        p {
-            color: #666;
-            margin-bottom: 30px;
+        .urgency-select {
+            padding: 8px;
+            width: 100%;
         }
-        .back-btn {
+        .submit-btn {
             background-color: #004d99;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
-            text-decoration: none;
-            display: inline-block;
+            cursor: pointer;
         }
-        .back-btn:hover {
+        .submit-btn:hover {
             background-color: #003366;
+        }
+        .image-upload {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #emailSettings {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .success-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="success-container">
-        <div class="success-icon">✓</div>
-        <h1>Raport Trimis cu Succes!</h1>
-        <p>Raportarea dumneavoastră a fost trimisă și va fi procesată în cel mai scurt timp.</p>
-        <a href="index.html" class="back-btn">Înapoi la Formular</a>
+    <div class="header">
+        <h2>Formular Raportare Situații Nesigure</h2>
+        <h3>Terminal Agigea Port</h3>
     </div>
+
+    <div id="emailSettings">
+        <div class="form-group">
+            <label for="emailTo">Trimite raportul către (email):</label>
+            <input type="email" id="emailTo" name="emailTo" required placeholder="email@companie.ro">
+        </div>
+    </div>
+
+    <form id="safetyReport" onsubmit="return sendEmail(event)">
+        <div class="form-group">
+            <label for="reportDate">Data raportării:</label>
+            <input type="date" id="reportDate" name="reportDate" required>
+        </div>
+
+        <div class="form-group">
+            <label for="reportTime">Ora raportării:</label>
+            <input type="time" id="reportTime" name="reportTime" required>
+        </div>
+
+        <div class="form-group">
+            <label for="reporterName">Nume raportor:</label>
+            <input type="text" id="reporterName" name="reporterName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Locația exactă în terminal:</label>
+            <input type="text" id="location" name="location" required>
+        </div>
+
+        <div class="form-group">
+            <label for="urgencyLevel">Nivel de urgență:</label>
+            <select class="urgency-select" id="urgencyLevel" name="urgencyLevel" required>
+                <option value="">Selectați nivelul de urgență</option>
+                <option value="low">Scăzut - Necesită atenție</option>
+                <option value="medium">Mediu - Necesită intervenție în 24h</option>
+                <option value="high">Ridicat - Necesită intervenție imediată</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Descrierea situației nesigure:</label>
+            <textarea id="description" name="description" required placeholder="Descrieți detaliat situația observată..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="actionTaken">Măsuri luate imediat (dacă este cazul):</label>
+            <textarea id="actionTaken" name="actionTaken" placeholder="Descrieți măsurile luate pentru siguranță..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="suggestions">Sugestii de îmbunătățire:</label>
+            <textarea id="suggestions" name="suggestions" placeholder="Propuneți soluții pentru rezolvarea situației..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Atașați fotografii ale situației:</label>
+            <div class="image-upload">
+                <input type="file" id="imageUpload" name="imageUpload" accept="image/*" multiple>
+                <p>Trageți fotografiile aici sau click pentru încărcare</p>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            Raportul a fost trimis cu succes!
+        </div>
+
+        <button type="submit" class="submit-btn">Trimite Raportarea</button>
+    </form>
+
+    <script>
+        function sendEmail(event) {
+            event.preventDefault();
+            
+            const emailTo = document.getElementById('emailTo').value;
+            const form = document.getElementById('safetyReport');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Construim corpul emailului
+            let emailBody = `
+Raport Situație Nesigură - Terminal Agigea Port
+
+Data: ${document.getElementById('reportDate').value}
+Ora: ${document.getElementById('reportTime').value}
+Raportor: ${document.getElementById('reporterName').value}
+Locație: ${document.getElementById('location').value}
+Nivel urgență: ${document.getElementById('urgencyLevel').value}
+
+Descriere situație:
+${document.getElementById('description').value}
+
+Măsuri luate:
+${document.getElementById('actionTaken').value}
+
+Sugestii:
+${document.getElementById('suggestions').value}
+            `;
+
+            // Deschidem clientul de email implicit
+            const mailtoLink = `mailto:${emailTo}?subject=Raport Situație Nesigură - Terminal Agigea&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
+
+            // Afișăm mesajul de succes
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+
+            return false;
+        }
+
+        // Setăm data și ora curentă
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            document.getElementById('reportDate').value = now.toISOString().split('T')[0];
+            document.getElementById('reportTime').value = now.toTimeString().slice(0,5);
+        });
+    </script>
 </body>
 </html>
