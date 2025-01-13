@@ -3,177 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formular Raportare Situații Nesigure</title>
+    <title>ADM Safety Reporting System</title>
     <style>
-        /* Stiluri CSS similare cu cele din codul original */
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
+            margin: 0;
             padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 15px;
+            margin: -20px -20px 20px;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            text-align: center;
+        }
+        .logo {
+            max-height: 60px;
+            margin-bottom: 10px;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input, textarea, select, button {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        input[type="time"],
+        input[type="file"],
+        textarea,
+        select {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            margin-top: 5px;
+            box-sizing: border-box;
         }
-        .submit-btn {
+        .btn {
             background-color: #004d99;
             color: white;
+            padding: 10px 20px;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            width: 100%;
+            font-size: 16px;
         }
-        .submit-btn:hover {
+        .btn:hover {
             background-color: #003366;
         }
-        .image-upload {
-            border: 2px dashed #ddd;
-            padding: 20px;
+        .auth-toggle {
             text-align: center;
+            margin-top: 15px;
+        }
+        .auth-toggle a {
+            color: #004d99;
+            text-decoration: none;
+        }
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        #loginForm, #registerForm {
+            display: none;
+        }
+        #reportForm {
+            display: none;
+        }
+        .user-info {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #004d99;
+            cursor: pointer;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h2>Formular Raportare Situații Nesigure</h2>
+    <div class="container">
+        <div class="header">
+            <img src="https://www.adm.com/images/default-source/default-album/adm_logo_h_blue_rgb.png" alt="ADM Logistics Logo" class="logo">
+            <h2>Sistem Raportare Situații Nesigure</h2>
+            <h3>Terminal Agigea Port</h3>
+        </div>
 
-    <!-- Formular Raportare -->
-    <form id="safetyReport" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="emailTo">Trimite raportul către:</label>
-            <select id="emailTo" name="emailTo">
-                <option value="marian.ahtamon@adm.com">marian.ahtamon@adm.com</option>
-                <option value="alt.adresa@exemplu.com">alt.adresa@exemplu.com</option>
-            </select>
+        <!-- Login Form -->
+        <div id="loginForm">
+            <h3>Autentificare</h3>
+            <div class="form-group">
+                <label for="loginEmail">Email ADM:</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Parolă:</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button class="btn" onclick="login()">Autentificare</button>
+            <div class="auth-toggle">
+                Nu aveți cont? <a href="#" onclick="showRegister()">Înregistrare</a>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="reportDate">Data raportării:</label>
-            <input type="date" id="reportDate" name="reportDate" required>
-        </div>
-        <div class="form-group">
-            <label for="reportTime">Ora raportării:</label>
-            <input type="time" id="reportTime" name="reportTime" required>
-        </div>
-        <div class="form-group">
-            <label for="reporterName">Nume raportor:</label>
-            <input type="text" id="reporterName" name="reporterName" required>
-        </div>
-        <div class="form-group">
-            <label for="location">Locația:</label>
-            <input type="text" id="location" name="location" required>
-        </div>
-        <div class="form-group">
-            <label for="urgencyLevel">Nivel de urgență:</label>
-            <select id="urgencyLevel" name="urgencyLevel" required>
-                <option value="">Selectează</option>
-                <option value="low">Scăzut</option>
-                <option value="medium">Mediu</option>
-                <option value="high">Ridicat</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="description">Descrierea situației:</label>
-            <textarea id="description" name="description" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="imageUpload">Atașează imagini:</label>
-            <input type="file" id="imageUpload" name="imageUpload" accept="image/*" multiple>
-        </div>
-        <button type="submit" class="submit-btn">Trimite Raportarea</button>
-    </form>
 
-    <!-- Formular pentru crearea unui nou utilizator -->
-    <h3>Creare Utilizator Nou</h3>
-    <form id="createUserForm">
-        <div class="form-group">
-            <label for="newUserEmail">Email:</label>
-            <input type="email" id="newUserEmail" name="newUserEmail" required>
+        <!-- Register Form -->
+        <div id="registerForm">
+            <h3>Înregistrare Cont Nou</h3>
+            <div class="form-group">
+                <label for="regName">Nume complet:</label>
+                <input type="text" id="regName" required>
+            </div>
+            <div class="form-group">
+                <label for="regEmail">Email ADM:</label>
+                <input type="email" id="regEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Parolă:</label>
+                <input type="password" id="regPassword" required>
+            </div>
+            <button class="btn" onclick="register()">Înregistrare</button>
+            <div class="auth-toggle">
+                Aveți deja cont? <a href="#" onclick="showLogin()">Autentificare</a>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="newUserName">Nume Utilizator:</label>
-            <input type="text" id="newUserName" name="newUserName" required>
+
+        <!-- Report Form -->
+        <div id="reportForm">
+            <div class="user-info">
+                Bun venit, <span id="userName"></span>! 
+                <button class="logout-btn" onclick="logout()">Deconectare</button>
+            </div>
+
+            <form action="https://formsubmit.co/marian.ahtamon@adm.com" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_subject" value="Raport Situație Nesigură - ADM Terminal Agigea">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_captcha" value="false">
+
+                <div class="form-group">
+                    <label for="reportDate">Data raportării:</label>
+                    <input type="date" id="reportDate" name="Data" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reportTime">Ora raportării:</label>
+                    <input type="time" id="reportTime" name="Ora" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Locația exactă în terminal:</label>
+                    <input type="text" id="location" name="Locatie" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="urgencyLevel">Nivel de urgență:</label>
+                    <select id="urgencyLevel" name="Nivel_urgenta" required>
+                        <option value="">Selectați nivelul de urgență</option>
+                        <option value="Scăzut">Scăzut - Necesită atenție</option>
+                        <option value="Mediu">Mediu - Necesită intervenție în 24h</option>
+                        <option value="Ridicat">Ridicat - Necesită intervenție imediată</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descrierea situației nesigure:</label>
+                    <textarea id="description" name="Descriere" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="actionTaken">Măsuri luate imediat (dacă este cazul):</label>
+                    <textarea id="actionTaken" name="Masuri_luate"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="suggestions">Sugestii de îmbunătățire:</label>
+                    <textarea id="suggestions" name="Sugestii"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="photos">Atașați fotografii:</label>
+                    <input type="file" id="photos" name="attachment" accept="image/*" multiple onchange="previewImages(this)">
+                    <div id="imagePreview" class="preview-container"></div>
+                </div>
+
+                <button type="submit" class="btn">Trimite Raportarea</button>
+            </form>
         </div>
-        <button type="submit" class="submit-btn">Creare Utilizator</button>
-    </form>
+    </div>
 
     <script>
-        // Formularul pentru raportare
-        document.getElementById('safetyReport').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const formData = new FormData(this);
-            const emailTo = formData.get('emailTo');
-            const date = formData.get('reportDate');
-            const time = formData.get('reportTime');
-            const reporter = formData.get('reporterName');
-            const location = formData.get('location');
-            const urgency = formData.get('urgencyLevel');
-            const description = formData.get('description');
-
-            // Construim corpul emailului
-            const emailBody = `
-Raport Situație Nesigură
-Data: ${date}
-Ora: ${time}
-Raportor: ${reporter}
-Locație: ${location}
-Nivel de urgență: ${urgency}
-Descriere:
-${description}
-            `;
-
-            // Trimiterea emailului
-            try {
-                const response = await fetch('https://your-backend-api.com/send-email', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (response.ok) {
-                    alert('Raportul a fost trimis cu succes!');
-                } else {
-                    alert('A apărut o eroare la trimiterea raportului.');
-                }
-            } catch (error) {
-                console.error('Eroare:', error);
-                alert('Eroare la conectarea cu serverul.');
+        // Show initial login form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                showReportForm(JSON.parse(user));
+            } else {
+                showLogin();
             }
+            
+            // Set current date and time
+            const now = new Date();
+            document.getElementById('reportDate').value = now.toISOString().split('T')[0];
+            document.getElementById('reportTime').value = now.toTimeString().slice(0,5);
         });
 
-        // Formularul pentru crearea unui nou utilizator
-        document.getElementById('createUserForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('reportForm').style.display = 'none';
+        }
 
-            const formData = new FormData(this);
-            const userEmail = formData.get('newUserEmail');
-            const userName = formData.get('newUserName');
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('reportForm').style.display = 'none';
+        }
 
-            // Logica pentru crearea utilizatorului (de exemplu, trimiterea unui email sau salvarea în backend)
-            try {
-                const response = await fetch('https://your-backend-api.com/create-user', {
-                    method: 'POST',
-                    body: formData,
-                });
+        function showReportForm(user) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('reportForm').style.display = 'block';
+            document.getElementById('userName').textContent = user.name || user.email;
+        }
 
-                if (response.ok) {
-                    alert('Utilizatorul a fost creat cu succes!');
-                } else {
-                    alert('A apărut o eroare la crearea utilizatorului.');
-                }
-            } catch (error) {
-                console.error('Eroare:', error);
-                alert('Eroare la conectarea cu serverul.');
+        function register() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            // Validare email ADM
+            if (!email.endsWith('@adm.com')) {
+                alert('Vă rugăm folosiți adresa de email ADM (@adm.com)');
+                return;
             }
-        });
+
+            // Store user in localStorage
+            const user = { name, email, password };
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(user));
+
+            showReportForm(user);
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Validate ADM email
+            if (!email.endsWith('@adm.com')) {
+                alert('Vă rugăm folosiți adresa de email ADM (@adm.com)');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showReportForm(user);
+            } else {
+                alert('Email sau parolă incorectă');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            showLogin();
+        }
+
+        function previewImages(input) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.className = 'preview-image';
+                            preview.appendChild(img);
+                        }
+                        
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
     </script>
 </body>
 </html>
