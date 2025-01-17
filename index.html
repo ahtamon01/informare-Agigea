@@ -1,1 +1,246 @@
-<!DOCTYPE html> <html lang="ro"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Sistem Raportare</title> <style> body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; } .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); } .btn { background-color: #004d99; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin: 10px 0; } .btn:hover { background-color: #003366; } textarea, input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; } h3, h4 { text-align: center; } .report-details { border: 1px solid #ddd; border-radius: 4px; padding: 10px; margin-bottom: 10px; } .report-images img { max-width: 100px; max-height: 100px; margin: 5px; border-radius: 4px; } .hidden { display: none; } .status { font-weight: bold; color: green; } .status.open { color: red; } </style> </head> <body> <div class="container"> <h3>Formular de Raportare</h3> <form id="reportForm" onsubmit="submitReport(event)"> <label for="name">Nume:</label> <input type="text" id="name" placeholder="Nume" required> <label for="surname">Prenume:</label> <input type="text" id="surname" placeholder="Prenume" required> <label for="reportDate">Data:</label> <input type="date" id="reportDate" required> <label for="reportTime">Ora:</label> <input type="time" id="reportTime" required> <label for="location">Locație:</label> <input type="text" id="location" placeholder="Locația exactă" required> <label for="urgencyLevel">Nivel de urgență:</label> <select id="urgencyLevel" required> <option value="">Selectați...</option> <option value="Scăzut">Scăzut</option> <option value="Mediu">Mediu</option> <option value="Ridicat">Ridicat</option> </select> <label for="description">Descrierea situației:</label> <textarea id="description" rows="4" placeholder="Descrieți situația nesigură" required></textarea> <label for="photos">Atașați fotografii:</label> <input type="file" id="photos" accept="image/*" multiple> <button type="submit" class="btn">Trimite Raportarea</button> </form> <div id="historySection"> <h3>Istoric Raportări</h3> <div id="reportHistory"></div> </div> </div> <script> document.addEventListener('DOMContentLoaded', () => { const now = new Date(); document.getElementById('reportDate').value = now.toISOString().split('T')[0]; document.getElementById('reportTime').value = now.toTimeString().slice(0, 5); displayHistory(); }); function submitReport(event) { event.preventDefault(); const report = { id: Date.now(), name: document.getElementById('name').value, surname: document.getElementById('surname').value, date: document.getElementById('reportDate').value, time: document.getElementById('reportTime').value, location: document.getElementById('location').value, urgency: document.getElementById('urgencyLevel').value, description: document.getElementById('description').value, status: "Deschis", images: [], closedBy: null }; const files = document.getElementById('photos').files; for (let file of files) { const reader = new FileReader(); reader.onload = function(e) { report.images.push(e.target.result); if (report.images.length === files.length) { saveReport(report); } }; reader.readAsDataURL(file); } if (files.length === 0) saveReport(report); } function saveReport(report) { const reports = JSON.parse(localStorage.getItem('reports') || '[]'); reports.push(report); localStorage.setItem('reports', JSON.stringify(reports)); alert('Raport trimis cu succes!'); displayHistory(); } function displayHistory() { const reportHistory = document.getElementById('reportHistory'); const reports = JSON.parse(localStorage.getItem('reports') || '[]'); if (reports.length === 0) { reportHistory.innerHTML = '<p>Nu există raportări salvate.</p>'; return; } reportHistory.innerHTML = reports.map((report, index) => ` <div class="report-details"> <h4>Raport #${index + 1}</h4> <p><strong>Nume:</strong> ${report.name} ${report.surname}</p> <p><strong>Data:</strong> ${report.date}</p> <p><strong>Ora:</strong> ${report.time}</p> <p><strong>Locație:</strong> ${report.location}</p> <p><strong>Urgentă:</strong> ${report.urgency}</p> <p><strong>Status:</strong> <span class="status ${report.status === 'Deschis' ? 'open' : ''}">${report.status}</span></p> ${report.closedBy ? `<p><strong>Închis de:</strong> ${report.closedBy}</p>` : ''} <button class="btn" onclick="toggleDetails(${report.id})">Detalii</button> <button class="btn" onclick="closeReport(${report.id})">Marchează ca Închis</button> <button class="btn" onclick="deleteReport(${report.id})">Șterge Raport</button> <div id="details-${report.id}" class="hidden"> <p><strong>Descriere:</strong> ${report.description}</p> <div class="report-images"> ${report.images.map(img => `<img src="${img}" alt="Poza">`).join('')} </div> </div> </div> `).join(''); } function toggleDetails(id) { const details = document.getElementById(`details-${id}`); details.classList.toggle('hidden'); } function closeReport(id) { const reports = JSON.parse(localStorage.getItem('reports') || '[]'); const report = reports.find(r => r.id === id); if (report) { report.status = "Închis"; report.closedBy = prompt("Introduceți numele celui care închide raportul:"); localStorage.setItem('reports', JSON.stringify(reports)); displayHistory(); } } function deleteReport(id) { const reports = JSON.parse(localStorage.getItem('reports') || '[]'); const index = reports.findIndex(r => r.id === id); if (index !== -1) { reports.splice(index, 1); localStorage.setItem('reports', JSON.stringify(reports)); displayHistory(); } } </script> </body> </html>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Raportare</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background-color: #004d99;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .btn:hover {
+            background-color: #003366;
+        }
+        textarea, input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        h3, h4 {
+            text-align: center;
+        }
+        .report-details {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .report-images img {
+            max-width: 100px;
+            max-height: 100px;
+            margin: 5px;
+            border-radius: 4px;
+        }
+        .hidden {
+            display: none;
+        }
+        .status {
+            font-weight: bold;
+            color: green;
+        }
+        .status.open {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Formular de Raportare</h3>
+        <form id="reportForm" onsubmit="submitReport(event)">
+            <label for="name">Nume:</label>
+            <input type="text" id="name" placeholder="Nume" required>
+
+            <label for="surname">Prenume:</label>
+            <input type="text" id="surname" placeholder="Prenume" required>
+
+            <label for="reportDate">Data:</label>
+            <input type="date" id="reportDate" required>
+
+            <label for="reportTime">Ora:</label>
+            <input type="time" id="reportTime" required>
+
+            <label for="location">Locație:</label>
+            <input type="text" id="location" placeholder="Locația exactă" required>
+
+            <label for="urgencyLevel">Nivel de urgență:</label>
+            <select id="urgencyLevel" required>
+                <option value="">Selectați...</option>
+                <option value="Scăzut">Scăzut</option>
+                <option value="Mediu">Mediu</option>
+                <option value="Ridicat">Ridicat</option>
+            </select>
+
+            <label for="description">Descrierea situației:</label>
+            <textarea id="description" rows="4" placeholder="Descrieți situația nesigură" required></textarea>
+
+            <label for="photos">Atașați fotografii:</label>
+            <input type="file" id="photos" accept="image/*" multiple>
+
+            <button type="submit" class="btn">Trimite Raportarea</button>
+        </form>
+
+        <div id="historySection">
+            <h3>Istoric Raportări</h3>
+            <div id="reportHistory"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            document.getElementById('reportDate').value = now.toISOString().split('T')[0];
+            document.getElementById('reportTime').value = now.toTimeString().slice(0, 5);
+            displayHistory();
+        });
+
+        function submitReport(event) {
+            event.preventDefault();
+            const report = {
+                id: Date.now(),
+                name: document.getElementById('name').value,
+                surname: document.getElementById('surname').value,
+                date: document.getElementById('reportDate').value,
+                time: document.getElementById('reportTime').value,
+                location: document.getElementById('location').value,
+                urgency: document.getElementById('urgencyLevel').value,
+                description: document.getElementById('description').value,
+                status: "Deschis",
+                images: [],
+                closedBy: null,
+                comment: null,
+                closureImages: []
+            };
+
+            const files = document.getElementById('photos').files;
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    report.images.push(e.target.result);
+                    if (report.images.length === files.length) {
+                        saveReport(report);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            if (files.length === 0) saveReport(report);
+        }
+
+        function saveReport(report) {
+            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+            reports.push(report);
+            localStorage.setItem('reports', JSON.stringify(reports));
+            alert('Raport trimis cu succes!');
+            displayHistory();
+        }
+
+        function displayHistory() {
+            const reportHistory = document.getElementById('reportHistory');
+            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+            if (reports.length === 0) {
+                reportHistory.innerHTML = '<p>Nu există raportări salvate.</p>';
+                return;
+            }
+
+            reportHistory.innerHTML = reports.map((report, index) => `
+                <div class="report-details">
+                    <h4>Raport #${index + 1}</h4>
+                    <p><strong>Nume:</strong> ${report.name} ${report.surname}</p>
+                    <p><strong>Data:</strong> ${report.date}</p>
+                    <p><strong>Ora:</strong> ${report.time}</p>
+                    <p><strong>Locație:</strong> ${report.location}</p>
+                    <p><strong>Urgentă:</strong> ${report.urgency}</p>
+                    <p><strong>Status:</strong> <span class="status ${report.status === 'Deschis' ? 'open' : ''}">${report.status}</span></p>
+                    ${report.closedBy ? `<p><strong>Închis de:</strong> ${report.closedBy}</p>` : ''}
+                    ${report.comment ? `<p><strong>Comentariu închidere:</strong> ${report.comment}</p>` : ''}
+                    <div class="report-images">
+                        ${report.closureImages ? report.closureImages.map(img => `<img src="${img}" alt="Poza închidere">`).join('') : ''}
+                    </div>
+                    <button class="btn" onclick="toggleDetails(${report.id})">Detalii</button>
+                    <button class="btn" onclick="closeReport(${report.id})">Marchează ca Închis</button>
+                    <button class="btn" onclick="deleteReport(${report.id})">Șterge Raport</button>
+                    <div id="details-${report.id}" class="hidden">
+                        <p><strong>Descriere:</strong> ${report.description}</p>
+                        <div class="report-images">
+                            ${report.images.map(img => `<img src="${img}" alt="Poza">`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleDetails(id) {
+            const details = document.getElementById(`details-${id}`);
+            details.classList.toggle('hidden');
+        }
+
+        function closeReport(id) {
+            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+            const report = reports.find(r => r.id === id);
+
+            if (report) {
+                report.status = "Închis";
+                report.closedBy = prompt("Introduceți numele celui care închide raportul:");
+                const comment = prompt("Introduceți un comentariu pentru închiderea raportului:");
+                report.comment = comment || "Fără comentarii.";
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.multiple = true;
+
+                fileInput.addEventListener('change', (e) => {
+                    const files = Array.from(fileInput.files);
+                    const imagePromises = files.map(file => {
+                        return new Promise(resolve => {
+                            const reader = new FileReader();
+                            reader.onload = (event) => resolve(event.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                    });
+
+                    Promise.all(imagePromises).then(images => {
+                        report.closureImages = images;
+                        localStorage.setItem('reports', JSON.stringify(reports));
+                        alert("Raport închis cu succes!");
+                        displayHistory();
+                    });
+                });
+
+                fileInput.click();
+            }
+        }
+
+        function deleteReport(id) {
+            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+            const updatedReports = reports.filter(r => r.id !== id);
+            localStorage.setItem('reports', JSON.stringify(updatedReports));
+            alert("Raport șters cu succes!");
+            displayHistory();
+        }
+    </script>
+</body>
+</html>
