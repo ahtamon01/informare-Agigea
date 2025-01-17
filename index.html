@@ -64,22 +64,6 @@
         .status.open {
             color: red;
         }
-        .kpi-section {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .kpi {
-            display: inline-block;
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-        .kpi img {
-            width: 50px;
-            height: 50px;
-        }
     </style>
 </head>
 <body>
@@ -121,19 +105,6 @@
         <div id="historySection">
             <h3>Istoric Raportări</h3>
             <div id="reportHistory"></div>
-            <button class="btn" onclick="exportToExcel()">Exportă în Excel</button>
-        </div>
-
-        <div class="kpi-section">
-            <h3>KPI-uri Raportare</h3>
-            <div class="kpi" id="kpiOpen">
-                <img src="https://cdn-icons-png.flaticon.com/512/979/979585.png" alt="Soare Deschise">
-                <p><strong>Deschise:</strong> <span id="openReports">0</span></p>
-            </div>
-            <div class="kpi" id="kpiClosed">
-                <img src="https://cdn-icons-png.flaticon.com/512/1695/1695213.png" alt="Curcubeu Închise">
-                <p><strong>Închise:</strong> <span id="closedReports">0</span></p>
-            </div>
         </div>
     </div>
 
@@ -189,12 +160,6 @@
         function displayHistory() {
             const reportHistory = document.getElementById('reportHistory');
             const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-
-            const openReports = reports.filter(r => r.status === 'Deschis').length;
-            const closedReports = reports.filter(r => r.status === 'Închis').length;
-            document.getElementById('openReports').textContent = openReports;
-            document.getElementById('closedReports').textContent = closedReports;
-
             if (reports.length === 0) {
                 reportHistory.innerHTML = '<p>Nu există raportări salvate.</p>';
                 return;
@@ -233,46 +198,49 @@
         }
 
         function closeReport(id) {
-            const reports = JSON.parse(localStorage.getItem('reports') || []);
+            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
             const report = reports.find(r => r.id === id);
+
             if (report) {
                 report.status = "Închis";
-                localStorage.setItem('reports', JSON.stringify(reports));
-                displayHistory();
+                report.closedBy = prompt("Introduceți numele celui care închide raportul:");
+                const comment = prompt("Introduceți un comentariu pentru închiderea raportului:");
+                report.comment = comment || "Fără comentarii.";
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.multiple = true;
+
+                fileInput.addEventListener('change', (e) => {
+                    const files = Array.from(fileInput.files);
+                    const imagePromises = files.map(file => {
+                        return new Promise(resolve => {
+                            const reader = new FileReader();
+                            reader.onload = (event) => resolve(event.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                    });
+
+                    Promise.all(imagePromises).then(images => {
+                        report.closureImages = images;
+                        localStorage.setItem('reports', JSON.stringify(reports));
+                        alert("Raport închis cu succes!");
+                        displayHistory();
+                    });
+                });
+
+                fileInput.click();
             }
         }
 
         function deleteReport(id) {
-            let reports = JSON.parse(localStorage.getItem('reports') || []);
-            reports = reports.filter(r => r.id !== id);
-            localStorage.setItem('reports', JSON.stringify(reports));
+            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+            const updatedReports = reports.filter(r => r.id !== id);
+            localStorage.setItem('reports', JSON.stringify(updatedReports));
+            alert("Raport șters cu succes!");
             displayHistory();
         }
-
-        function exportToExcel() {
-            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-            if (reports.length === 0) {
-                alert('Nu există date de exportat!');
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,ID,Nume,Prenume,Data,Ora,Locație,Urgență,Descriere,Status\n";
-
-            reports.forEach(report => {
-                const row = `${report.id},${report.name},${report.surname},${report.date},${report.time},${report.location},${report.urgency},"${report.description}",${report.status}`;
-                csvContent += row + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "rapoarte.csv");
-            document.body.appendChild(link);
-
-            link.click();
-            document.body.removeChild(link);
-        }
-
     </script>
 </body>
 </html>
