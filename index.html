@@ -108,7 +108,10 @@
         </div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        const socket = io('http://localhost:3000');
+
         document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
             document.getElementById('reportDate').value = now.toISOString().split('T')[0];
@@ -150,97 +153,49 @@
         }
 
         function saveReport(report) {
-            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-            reports.push(report);
-            localStorage.setItem('reports', JSON.stringify(reports));
-            alert('Raport trimis cu succes!');
-            displayHistory();
+            fetch('/submitReport', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(report)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Raport trimis cu succes!');
+            })
+            .catch(error => console.error('Eroare la trimiterea raportului:', error));
         }
 
         function displayHistory() {
-            const reportHistory = document.getElementById('reportHistory');
-            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-            if (reports.length === 0) {
-                reportHistory.innerHTML = '<p>Nu există raportări salvate.</p>';
-                return;
-            }
+            fetch('/getReports')
+                .then(response => response.json())
+                .then(reports => {
+                    const reportHistory = document.getElementById('reportHistory');
+                    if (reports.length === 0) {
+                        reportHistory.innerHTML = '<p>Nu există raportări salvate.</p>';
+                        return;
+                    }
 
-            reportHistory.innerHTML = reports.map((report, index) => `
-                <div class="report-details">
-                    <h4>Raport #${index + 1}</h4>
-                    <p><strong>Nume:</strong> ${report.name} ${report.surname}</p>
-                    <p><strong>Data:</strong> ${report.date}</p>
-                    <p><strong>Ora:</strong> ${report.time}</p>
-                    <p><strong>Locație:</strong> ${report.location}</p>
-                    <p><strong>Urgentă:</strong> ${report.urgency}</p>
-                    <p><strong>Status:</strong> <span class="status ${report.status === 'Deschis' ? 'open' : ''}">${report.status}</span></p>
-                    ${report.closedBy ? `<p><strong>Închis de:</strong> ${report.closedBy}</p>` : ''}
-                    ${report.comment ? `<p><strong>Comentariu închidere:</strong> ${report.comment}</p>` : ''}
-                    <div class="report-images">
-                        ${report.closureImages ? report.closureImages.map(img => `<img src="${img}" alt="Poza închidere">`).join('') : ''}
-                    </div>
-                    <button class="btn" onclick="toggleDetails(${report.id})">Detalii</button>
-                    <button class="btn" onclick="closeReport(${report.id})">Marchează ca Închis</button>
-                    <button class="btn" onclick="deleteReport(${report.id})">Șterge Raport</button>
-                    <div id="details-${report.id}" class="hidden">
-                        <p><strong>Descriere:</strong> ${report.description}</p>
-                        <div class="report-images">
-                            ${report.images.map(img => `<img src="${img}" alt="Poza">`).join('')}
+                    reportHistory.innerHTML = reports.map((report, index) => `
+                        <div class="report-details">
+                            <h4>Raport #${index + 1}</h4>
+                            <p><strong>Nume:</strong> ${report.name} ${report.surname}</p>
+                            <p><strong>Data:</strong> ${report.date}</p>
+                            <p><strong>Ora:</strong> ${report.time}</p>
+                            <p><strong>Locație:</strong> ${report.location}</p>
+                            <p><strong>Urgentă:</strong> ${report.urgency}</p>
+                            <p><strong>Status:</strong> <span class="status ${report.status === 'Deschis' ? 'open' : ''}">${report.status}</span></p>
+                            <div class="report-images">
+                                ${report.images.map(img => `<img src="${img}" alt="Poza">`).join('')}
+                            </div>
                         </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleDetails(id) {
-            const details = document.getElementById(`details-${id}`);
-            details.classList.toggle('hidden');
-        }
-
-        function closeReport(id) {
-            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-            const report = reports.find(r => r.id === id);
-
-            if (report) {
-                report.status = "Închis";
-                report.closedBy = prompt("Introduceți numele celui care închide raportul:");
-                const comment = prompt("Introduceți un comentariu pentru închiderea raportului:");
-                report.comment = comment || "Fără comentarii.";
-
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.accept = 'image/*';
-                fileInput.multiple = true;
-
-                fileInput.addEventListener('change', (e) => {
-                    const files = Array.from(fileInput.files);
-                    const imagePromises = files.map(file => {
-                        return new Promise(resolve => {
-                            const reader = new FileReader();
-                            reader.onload = (event) => resolve(event.target.result);
-                            reader.readAsDataURL(file);
-                        });
-                    });
-
-                    Promise.all(imagePromises).then(images => {
-                        report.closureImages = images;
-                        localStorage.setItem('reports', JSON.stringify(reports));
-                        alert("Raport închis cu succes!");
-                        displayHistory();
-                    });
+                    `).join('');
                 });
-
-                fileInput.click();
-            }
         }
 
-        function deleteReport(id) {
-            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-            const updatedReports = reports.filter(r => r.id !== id);
-            localStorage.setItem('reports', JSON.stringify(updatedReports));
-            alert("Raport șters cu succes!");
-            displayHistory();
-        }
+        // Ascultă evenimentul 'newReport' pentru actualizări în timp real
+        socket.on('newReport', (report) => {
+            displayHistory(); // Actualizează istoricul la primirea unui raport nou
+        });
     </script>
 </body>
 </html>
