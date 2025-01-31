@@ -3,199 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Raportare</title>
+    <title>Slideshow Imagini</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .btn {
-            background-color: #004d99;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-        .btn:hover {
-            background-color: #003366;
-        }
-        textarea, input, select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        h3, h4 {
             text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
         }
-        .report-details {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            margin-bottom: 10px;
+
+        .slideshow-container {
+            max-width: 800px;
+            margin: 20px auto;
+            position: relative;
+            background-color: #000;
         }
-        .report-images img {
-            max-width: 100px;
-            max-height: 100px;
-            margin: 5px;
-            border-radius: 4px;
-        }
-        .hidden {
+
+        .slides {
             display: none;
         }
-        .status {
-            font-weight: bold;
-            color: green;
+
+        .slides img {
+            width: 100%;
+            height: auto;
         }
-        .status.open {
-            color: red;
+
+        .fullscreen-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h3>Formular de Raportare</h3>
-        <form id="reportForm" onsubmit="submitReport(event)">
-            <label for="name">Nume:</label>
-            <input type="text" id="name" placeholder="Nume" required>
 
-            <label for="surname">Prenume:</label>
-            <input type="text" id="surname" placeholder="Prenume" required>
+    <h1>Slideshow Imagini</h1>
 
-            <label for="reportDate">Data:</label>
-            <input type="date" id="reportDate" required>
-
-            <label for="reportTime">Ora:</label>
-            <input type="time" id="reportTime" required>
-
-            <label for="location">Locație:</label>
-            <input type="text" id="location" placeholder="Locația exactă" required>
-
-            <label for="urgencyLevel">Nivel de urgență:</label>
-            <select id="urgencyLevel" required>
-                <option value="">Selectați...</option>
-                <option value="Scăzut">Scăzut</option>
-                <option value="Mediu">Mediu</option>
-                <option value="Ridicat">Ridicat</option>
-            </select>
-
-            <label for="description">Descrierea situației:</label>
-            <textarea id="description" rows="4" placeholder="Descrieți situația nesigură" required></textarea>
-
-            <label for="photos">Atașați fotografii:</label>
-            <input type="file" id="photos" accept="image/*" multiple>
-
-            <button type="submit" class="btn">Trimite Raportarea</button>
-        </form>
-
-        <div id="historySection">
-            <h3>Istoric Raportări</h3>
-            <div id="reportHistory"></div>
-        </div>
+    <div class="slideshow-container" id="slideshowContainer">
+        <!-- Imaginile vor fi încărcate aici -->
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
+    <!-- Buton pentru fullscreen -->
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
+
     <script>
-        const socket = io('http://localhost:3000');
+        let slideIndex = 0;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const now = new Date();
-            document.getElementById('reportDate').value = now.toISOString().split('T')[0];
-            document.getElementById('reportTime').value = now.toTimeString().slice(0, 5);
-            displayHistory();
-        });
+        // Funcția de încărcare a imaginilor
+        window.onload = function() {
+            const imageUrls = [
+                'https://raw.githubusercontent.com/username/repository/branch/image1.jpg',
+                'https://raw.githubusercontent.com/username/repository/branch/image2.jpg',
+                'https://raw.githubusercontent.com/username/repository/branch/image3.jpg'
+            ];
 
-        function submitReport(event) {
-            event.preventDefault();
-            const report = {
-                id: Date.now(),
-                name: document.getElementById('name').value,
-                surname: document.getElementById('surname').value,
-                date: document.getElementById('reportDate').value,
-                time: document.getElementById('reportTime').value,
-                location: document.getElementById('location').value,
-                urgency: document.getElementById('urgencyLevel').value,
-                description: document.getElementById('description').value,
-                status: "Deschis",
-                images: [],
-                closedBy: null,
-                comment: null,
-                closureImages: []
-            };
+            const container = document.getElementById('slideshowContainer');
+            imageUrls.forEach(url => {
+                const imgElement = document.createElement('div');
+                imgElement.className = 'slides';
+                imgElement.innerHTML = `<img src="${url}" alt="Imagine">`;
+                container.appendChild(imgElement);
+            });
+            startSlideshow();
+        }
 
-            const files = document.getElementById('photos').files;
-            for (let file of files) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    report.images.push(e.target.result);
-                    if (report.images.length === files.length) {
-                        saveReport(report);
-                    }
-                };
-                reader.readAsDataURL(file);
+        // Funcția de pornire a slideshow-ului
+        function startSlideshow() {
+            slideIndex = 0;
+            showSlides();
+            setInterval(showSlides, 3000);  // Schimbă slide-ul la fiecare 3 secunde
+        }
+
+        // Funcția care arată slide-ul activ
+        function showSlides() {
+            const slides = document.getElementsByClassName('slides');
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = 'none';
             }
-
-            if (files.length === 0) saveReport(report);
+            slideIndex++;
+            if (slideIndex > slides.length) { slideIndex = 1; }
+            slides[slideIndex - 1].style.display = 'block';
         }
 
-        function saveReport(report) {
-            fetch('/submitReport', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(report)
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Raport trimis cu succes!');
-            })
-            .catch(error => console.error('Eroare la trimiterea raportului:', error));
+        // Funcția pentru a activa/dezactiva fullscreen-ul
+        function toggleFullscreen() {
+            const container = document.querySelector('.slideshow-container');
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.mozRequestFullScreen) { // Firefox
+                    container.mozRequestFullScreen();
+                } else if (container.webkitRequestFullscreen) { // Chrome, Safari
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) { // IE/Edge
+                    container.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) { // Firefox
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) { // Chrome, Safari
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { // IE/Edge
+                    document.msExitFullscreen();
+                }
+            }
         }
-
-        function displayHistory() {
-            fetch('/getReports')
-                .then(response => response.json())
-                .then(reports => {
-                    const reportHistory = document.getElementById('reportHistory');
-                    if (reports.length === 0) {
-                        reportHistory.innerHTML = '<p>Nu există raportări salvate.</p>';
-                        return;
-                    }
-
-                    reportHistory.innerHTML = reports.map((report, index) => `
-                        <div class="report-details">
-                            <h4>Raport #${index + 1}</h4>
-                            <p><strong>Nume:</strong> ${report.name} ${report.surname}</p>
-                            <p><strong>Data:</strong> ${report.date}</p>
-                            <p><strong>Ora:</strong> ${report.time}</p>
-                            <p><strong>Locație:</strong> ${report.location}</p>
-                            <p><strong>Urgentă:</strong> ${report.urgency}</p>
-                            <p><strong>Status:</strong> <span class="status ${report.status === 'Deschis' ? 'open' : ''}">${report.status}</span></p>
-                            <div class="report-images">
-                                ${report.images.map(img => `<img src="${img}" alt="Poza">`).join('')}
-                            </div>
-                        </div>
-                    `).join('');
-                });
-        }
-
-        // Ascultă evenimentul 'newReport' pentru actualizări în timp real
-        socket.on('newReport', (report) => {
-            displayHistory(); // Actualizează istoricul la primirea unui raport nou
-        });
     </script>
+
 </body>
 </html>
