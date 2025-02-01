@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slideshow Imagini</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .slideshow-container {
+            max-width: 800px;
+            margin: 20px auto;
+            position: relative;
+            background-color: #000;
+        }
+
+        .slides {
+            display: none;
+        }
+
+        .slides img {
+            width: 100%;
+            height: auto;
+        }
+
+        .fullscreen-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Slideshow Imagini</h1>
+
+    <div class="slideshow-container" id="slideshowContainer">
+        <!-- Imaginile vor fi încărcate aici -->
+    </div>
+
+    <!-- Buton pentru fullscreen -->
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
+
+    <script>
+        let slideIndex = 0;
+
+        // Funcția de încărcare a imaginilor
+        window.onload = function() {
+            const imageUrls = [
+                'https://raw.githubusercontent.com/username/repository/branch/image1.jpg',
+                'https://raw.githubusercontent.com/username/repository/branch/image2.jpg',
+                'https://raw.githubusercontent.com/username/repository/branch/image3.jpg'
+            ];
+
+            const container = document.getElementById('slideshowContainer');
+            imageUrls.forEach(url => {
+                const imgElement = document.createElement('div');
+                imgElement.className = 'slides';
+                imgElement.innerHTML = `<img src="${url}" alt="Imagine">`;
+                container.appendChild(imgElement);
+            });
+            startSlideshow();
+        }
+
+        // Funcția de pornire a slideshow-ului
+        function startSlideshow() {
+            slideIndex = 0;
+            showSlides();
+            setInterval(showSlides, 3000);  // Schimbă slide-ul la fiecare 3 secunde
+        }
+
+        // Funcția care arată slide-ul activ
+        function showSlides() {
+            const slides = document.getElementsByClassName('slides');
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = 'none';
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) { slideIndex = 1; }
+            slides[slideIndex - 1].style.display = 'block';
+        }
+
+        // Funcția pentru a activa/dezactiva fullscreen-ul
+        function toggleFullscreen() {
+            const container = document.querySelector('.slideshow-container');
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.mozRequestFullScreen) { // Firefox
+                    container.mozRequestFullScreen();
+                } else if (container.webkitRequestFullscreen) { // Chrome, Safari
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) { // IE/Edge
+                    container.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) { // Firefox
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) { // Chrome, Safari
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { // IE/Edge
+                    document.msExitFullscreen();
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
