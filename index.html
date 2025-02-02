@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informare Agigea</title>
+    <title>Slideshow Imagini</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,19 +14,27 @@
         }
 
         .slideshow-container {
-            max-width: 800px;
-            margin: 20px auto;
+            max-width: 100%;
             position: relative;
             background-color: #000;
+            aspect-ratio: 16 / 9; /* Asigură-te că slideshow-ul are raportul 16:9 */
+            overflow: hidden;
+            margin: 20px auto;
         }
 
         .slides {
             display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Efect de tranziție lină */
+            position: absolute;
+            width: 100%;
+            height: 100%;
         }
 
         .slides img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover; /* Asigură-te că imaginea se va potrivi corect în container */
         }
 
         .fullscreen-btn {
@@ -78,7 +86,7 @@
         function startSlideshow() {
             slideIndex = 0;
             showSlides();
-            setInterval(showSlides, 10000);  // Schimbă slide-ul la fiecare 3 secunde
+            setInterval(showSlides, 60000);  // Schimbă slide-ul la fiecare 60 de secunde (1 minut)
         }
 
         // Funcția care arată slide-ul activ
@@ -86,10 +94,17 @@
             const slides = document.getElementsByClassName('slides');
             for (let i = 0; i < slides.length; i++) {
                 slides[i].style.display = 'none';
+                slides[i].style.opacity = 0;  // Asigură-te că slide-ul devine invizibil
             }
+
             slideIndex++;
             if (slideIndex > slides.length) { slideIndex = 1; }
-            slides[slideIndex - 1].style.display = 'block';
+
+            const currentSlide = slides[slideIndex - 1];
+            currentSlide.style.display = 'block';
+            setTimeout(() => {
+                currentSlide.style.opacity = 1;  // Aplică efectul de estompare
+            }, 50); // Asigură o tranziție lină după ce slide-ul devine vizibil
         }
 
         // Funcția pentru a activa/dezactiva fullscreen-ul
