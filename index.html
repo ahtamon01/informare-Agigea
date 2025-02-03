@@ -3,141 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slideshow Imagini cu Muzică</title>
+    <title>Slideshow Video</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             background-color: #f0f0f0;
+            text-align: center;
             margin: 0;
             padding: 0;
         }
 
         .slideshow-container {
-            max-width: 100%;
+            max-width: 80%;
+            margin: 50px auto;
             position: relative;
             background-color: #000;
-            aspect-ratio: 16 / 9; /* Asigură-te că slideshow-ul are raportul 16:9 */
-            overflow: hidden;
-            margin: 20px auto;
         }
 
-        .slides {
+        video {
+            width: 100%;
+            height: auto;
             display: none;
-            opacity: 0;
-            transition: opacity 1s ease-in-out; /* Efect de tranziție lină */
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Stiluri pentru butoanele de navigare */
+        .prev, .next {
             position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .slides img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Asigură-te că imaginea se va potrivi corect în container */
-        }
-
-        .fullscreen-btn {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
+            top: 50%;
+            padding: 16px;
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
-            font-size: 16px;
-            padding: 10px;
+            font-size: 18px;
             cursor: pointer;
+            border: none;
+        }
+
+        .prev {
+            left: 0;
+        }
+
+        .next {
+            right: 0;
         }
     </style>
 </head>
 <body>
 
-    <h1>Slideshow Imagini cu Muzică</h1>
-
-    <!-- Adăugăm elementul audio pentru muzică -->
-    <audio autoplay loop>
-        <source src="audio/melodie.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
+    <h1>Slideshow cu 4 Videoclipuri</h1>
 
     <div class="slideshow-container" id="slideshowContainer">
-        <!-- Imaginile vor fi încărcate aici -->
+        <!-- Videoclipuri -->
+        <video class="slides" autoplay muted>
+            <source src="video1.mp4" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
+
+        <video class="slides" autoplay muted>
+            <source src="video2.mp4" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
+
+        <video class="slides" autoplay muted>
+            <source src="video3.mp4" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
+
+        <video class="slides" autoplay muted>
+            <source src="video4.mp4" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
+
+        <!-- Butoane pentru navigare -->
+        <button class="prev" onclick="changeSlide(-1)">❮</button>
+        <button class="next" onclick="changeSlide(1)">❯</button>
     </div>
 
-    <!-- Buton pentru fullscreen -->
-    <button class="fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
-
     <script>
-        let slideIndex = 0;
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slides');
 
-        // Funcția de încărcare a imaginilor
-        window.onload = function() {
-            // Modificarea căii către imaginile tale
-            const imageUrls = [
-                'images/image1.jpg',  // Calea către imaginea 1
-                'images/image2.jpg',  // Calea către imaginea 2
-                'images/image3.jpg'   // Calea către imaginea 3
-            ];
-
-            const container = document.getElementById('slideshowContainer');
-            imageUrls.forEach(url => {
-                const imgElement = document.createElement('div');
-                imgElement.className = 'slides';
-                imgElement.innerHTML = `<img src="${url}" alt="Imagine">`;
-                container.appendChild(imgElement);
-            });
-            startSlideshow();
-        }
-
-        // Funcția de pornire a slideshow-ului
-        function startSlideshow() {
-            slideIndex = 0;
-            showSlides();
-            setInterval(showSlides, 60000);  // Schimbă slide-ul la fiecare 60 de secunde (1 minut)
-        }
-
-        // Funcția care arată slide-ul activ
-        function showSlides() {
-            const slides = document.getElementsByClassName('slides');
+        // Functia pentru a afisa slide-ul curent
+        function showSlide() {
             for (let i = 0; i < slides.length; i++) {
                 slides[i].style.display = 'none';
-                slides[i].style.opacity = 0;  // Asigură-te că slide-ul devine invizibil
             }
-
-            slideIndex++;
-            if (slideIndex > slides.length) { slideIndex = 1; }
-
-            const currentSlide = slides[slideIndex - 1];
-            currentSlide.style.display = 'block';
-            setTimeout(() => {
-                currentSlide.style.opacity = 1;  // Aplică efectul de estompare
-            }, 50); // Asigură o tranziție lină după ce slide-ul devine vizibil
+            slides[currentSlide].style.display = 'block';
         }
 
-        // Funcția pentru a activa/dezactiva fullscreen-ul
-        function toggleFullscreen() {
-            const container = document.querySelector('.slideshow-container');
-            if (!document.fullscreenElement) {
-                if (container.requestFullscreen) {
-                    container.requestFullscreen();
-                } else if (container.mozRequestFullScreen) { // Firefox
-                    container.mozRequestFullScreen();
-                } else if (container.webkitRequestFullscreen) { // Chrome, Safari
-                    container.webkitRequestFullscreen();
-                } else if (container.msRequestFullscreen) { // IE/Edge
-                    container.msRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.mozCancelFullScreen) { // Firefox
-                    document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) { // Chrome, Safari
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { // IE/Edge
-                    document.msExitFullscreen();
-                }
+        // Functia de schimbare a slide-urilor
+        function changeSlide(direction) {
+            currentSlide += direction;
+
+            if (currentSlide >= slides.length) {
+                currentSlide = 0;
             }
+            if (currentSlide < 0) {
+                currentSlide = slides.length - 1;
+            }
+
+            showSlide();
         }
+
+        // Initializam slideshow-ul
+        showSlide();
+
+        // Optional, daca vrei ca videoclipurile sa ruleze automat
+        setInterval(function() {
+            changeSlide(1);
+        }, 10000); // Schimba la fiecare 10 secunde
     </script>
 
 </body>
