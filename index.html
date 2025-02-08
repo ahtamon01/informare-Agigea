@@ -3,16 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Posturi TV Cool eTV</title>
+    <title>Extractor Streamuri Cool eTV</title>
 </head>
 <body>
-    <h1>Lista Posturi TV - Cool eTV</h1>
-    <ul>
-        <li><a href="https://www.cool-etv.net/ch/pro-tv.htm" target="_blank">Pro TV</a></li>
-        <li><a href="https://www.cool-etv.net/ch/antena-1.htm" target="_blank">Antena 1</a></li>
-        <li><a href="https://www.cool-etv.net/ch/prima-tv.htm" target="_blank">Prima TV</a></li>
-        <li><a href="https://www.cool-etv.net/ch/tvr-1.htm" target="_blank">TVR 1</a></li>
-        <li><a href="https://www.cool-etv.net/ch/realitatea-tv.htm" target="_blank">Realitatea TV</a></li>
-    </ul>
+    <h1>Extractor Streamuri TV</h1>
+    <button onclick="extractStream()">Extrage Stream</button>
+    <p id="result">Aștept extragerea fluxului...</p>
+
+    <script>
+        function extractStream() {
+            // Elementul player din pagina Cool eTV
+            let playerElement = document.getElementsByName('playerkuk')[0];
+            
+            if (playerElement) {
+                // Caută URL-ul fluxului video
+                let streamUrl = playerElement.outerHTML.match(/src="(.*?)"/i);
+                
+                if (streamUrl && streamUrl[1]) {
+                    document.getElementById('result').innerHTML = 
+                        `<strong>URL Stream:</strong> <a href="${streamUrl[1]}" target="_blank">${streamUrl[1]}</a>`;
+                } else {
+                    document.getElementById('result').innerText = "Nu s-a găsit niciun flux.";
+                }
+            } else {
+                document.getElementById('result').innerText = "Playerul nu a fost găsit pe această pagină.";
+            }
+        }
+    </script>
 </body>
 </html>
