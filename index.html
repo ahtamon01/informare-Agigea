@@ -3,32 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Live TV</title>
+    <title>Antena 1 Stream</title>
 </head>
 <body>
-    <h1>Player Stream TV</h1>
-    <div id="player"></div>
-
-    <script>
-        // Link inițial din sursă iframe
-        const dataSrc = "https://ceres1.visionman.cfd/000/anyone.html";
-
-        // Verificăm dacă linkul este valid
-        if (dataSrc) {
-            document.getElementById('player').innerHTML = `
-                <iframe 
-                    src="${dataSrc}" 
-                    allow="autoplay; fullscreen" 
-                    scrolling="no" 
-                    frameborder="0" 
-                    height="300px" 
-                    width="422px" 
-                    allowfullscreen>
-                </iframe>
-            `;
-        } else {
-            document.getElementById('player').innerText = "Nu s-a găsit fluxul video.";
-        }
-    </script>
+    <h1>Player Antena 1</h1>
+    <iframe 
+        src="https://www.cool-etv.net/ch/an1.htm#!" 
+        allow="autoplay; fullscreen" 
+        frameborder="0" 
+        width="100%" 
+        height="600px">
+    </iframe>
 </body>
 </html>
