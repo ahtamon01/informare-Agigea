@@ -1,27 +1,948 @@
-<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="ro">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" /> 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Antena 1 Player</title>
-    <script>
-        // Redirecționează către pagină și încearcă să forțeze fullscreen
-        function openPlayer() {
-            const newWindow = window.open("https://www.cool-etv.net/ch/an1.htm#!", "_blank");
-            if (newWindow) {
-                newWindow.onload = () => {
-                    newWindow.document.body.requestFullscreen?.();
-                };
-            } else {
-                alert("Permite pop-up-urile pentru a continua.");
-            }
-        }
+<style>
+ body {
+   background-color: black !important; 
+}
+</style>
 
-        // Deschide player-ul imediat ce pagina este accesată
-        window.onload = openPlayer;
-    </script>
-</head>
-<body>
-    <h1>Se încarcă playerul...</h1>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Filme TV Online - Vezi Cele Mai Vizionate Canale de Filme Live, Gratuit pe Orice Dispozitiv</title>
+    <meta name="description" content="Filme TV Online - Intra in lumea filmelor si bucura-te de cele mai bune filme online la TV in direct. Probabil ca vei cauta cel mai placut film, iar cele mai cunoscute canale TV precum Action,FilmBox, Movies etc sunt in topul cautarilor. Dar, dupa cum poti vedea, poti viziona si alte canale TV gratuit.">
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/> 
+    <meta name="apple-mobile-web-app-capable" content="yes"/> 
+    <meta name="mobile-web-app-capable" content="yes"/> 
+    <meta name="theme-color" content="#1c273b"/> 
+    <meta name="msapplication-TileColor" content="#1c273b"/> 
+    <meta name="msapplication-config" content="xbrowser.xml" />
+    <meta name="author" content="cool-tv">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="filme-tv.htm" />
+    <meta property="og:title" content="Filme TV Online - Vezi Cele Mai Vizionate Canale de Filme Live, Gratuit pe Orice Dispozitiv" />
+    <meta property="og:description" content="Filme TV Online - Intra in lumea filmelor si bucura-te de cele mai bune filme online la TV in direct. Probabil ca vei cauta cel mai placut film, iar cele mai cunoscute canale TV precum Action,FilmBox, Movies etc sunt in topul cautarilor. Dar, dupa cum poti vedea, poti viziona si alte canale TV gratuit.">
+    <meta property="og:image" content="https://fakeimg.pl/690x380/000000/ff7f7f/?text=Filme&amp;font=lobster" />
+    <meta property="og:site_name" content="cool-tv" />
+    <link rel="canonical" href="filme-tv.htm">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.webmanifest"/>
+
+<link href="Data/Teme/default/css/tabler.css" rel="stylesheet" />
+<link href="Data/Teme/default/css/custom.css" rel="stylesheet" />
+<link href="Data/Teme/default/css/toastify.css" rel="stylesheet" />
+
+
+ 
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z54LQYZ6TT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Z54LQYZ6TT');
+</script>
+
+</head> <body> 
+
+
+<div class="page"> 
+<header class="navbar navbar-expand-lg sticky-top navbar-dark"> 
+<div class="container-xl"> 
+<div class="d-flex justify-content-start">
+<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#meniu_stanga" aria-controls="meniu_stanga" aria-label="meniu"> 
+ <span class="navbar-toggler-icon"></span> 
+</button> 
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cautare" aria-expanded="false" aria-label="cautare">
+ <svg width="24" height="24" class="icon"><use href="Data/Teme/icons/iconuri3691.svg?ss#search"/></svg>
+</button>
+</div>
+<div class="navbar-brand d-none-navbar-horizontal d-flex justify-content-center col-lg-2">
+ <a title="cool-tv" href="index.htm">
+  <img src="tv-logo.png" width="270" height="55" alt="" class="navbar-brand-image">
+ </a>
+</div> 
+<div class="navbar-nav flex-row order-lg-last col-lg-auto"> 
+
+ <div class="nav-item"> 
+<button type="button" id="mod_tema" class="navbar-toggler nav-link d-flex p-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Mod Vizual" aria-label="Mod Vizual">
+<svg width="24" height="24" class="icon"> <use id="idm" href="Data/Teme/icons/iconuri.svg#sun"/> </svg>
+</button> 
+ </div> 
+
+
+</div> 
+<div class="collapse navbar-collapse" id="cautare">
+ <div class="container-xl"> 
+<form action="" method="GET" autocomplete="off"> 
+ <div class="input-icon"> 
+  <span class="input-icon-addon"> 
+   <svg width="24" height="24" class="icon mx-1"><use href="Data/Teme/icons/iconuri4124.svg?aa#search"/></svg> 
+  </span> 
+<input type="text" name="s" class="form-control cautare" onkeyup="rez_c_live(this.value)" onfocus="window.lx_v = 'cautare'" onfocusout="window.variabila = 'cautat'" data-bs-toggle="dropdown" placeholder="Căutare canale tv..." aria-label="Cautare"> 
+<div class="dropdown-menu dropdown-menu-card container-xl overflow-auto" style="max-height: 35rem"> 
+<div id="rez_live"></div>
+ </div> 
+</div> 
+</form>
+</div>
+</div> 
+</div> 
+</header>
+<div class="page-wrapper"> 
+<div class="container-xl">
+<div class="row">
+<div class="col-lg-2"> 
+<aside class="navbar-expand-lg meniu-fix ps">
+<div class="offcanvas offcanvas-start" tabindex="-1" id="meniu_stanga" aria-labelledby="meniu_stanga_l" aria-label="Meniu">
+<div class="offcanvas-header border-bottom"> 
+ <h5 class="offcanvas-title" id="meniu_stanga_l">Meniu</h5> 
+<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Inchide"></button> 
+</div>
+<div class="offcanvas-body py-0 pb-3">
+ <div class="d-flex flex-column flex-row flex-fill align-items-stretch justify-content-center"> 
+<ul class="nav nav-pills nav-vertical" id="m_s_c"> 
+<li class="hr-text text-primary m-3">Categorii</li> 
+
+
+
+
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href="generale.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icons-tabler-outline icon-tabler-category-2 animated-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="red" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M14 4h6v6h-6z" />
+                <path d="M4 14h6v6h-6z" />
+                <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M7 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+            </svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Generale</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;">42</span>
+    </a>
+</li>
+
+
+
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href="stiri.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-news animated-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="yellow" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
+                <path d="M8 8l4 0" />
+                <path d="M8 12l4 0" />
+                <path d="M8 16l4 0" />
+            </svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Stiri</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;">14</span>
+    </a>
+</li>
+
+
+
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href="sport.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-play-football animated-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="orange" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M11 4a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+                <path d="M3 17l5 1l.75 -1.5" />
+                <path d="M14 21v-4l-4 -3l1 -6" />
+                <path d="M6 12v-3l5 -1l3 3l3 1" />
+                <path d="M19.5 20a.5 .5 0 1 0 0 -1a.5 .5 0 0 0 0 1z" fill="currentColor" />
+            </svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Sport</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;">20</span>
+    </a>
+</li>
+
+
+
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href="filme-tv.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-movie animated-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="cyan" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                <path d="M8 4l0 16" />
+                <path d="M16 4l0 16" />
+                <path d="M4 8l4 0" />
+                <path d="M4 16l4 0" />
+                <path d="M4 12l16 0" />
+                <path d="M16 8l4 0" />
+                <path d="M16 16l4 0" />
+            </svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Filme</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;">24</span>
+    </a>
+</li>
+
+
+
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href="desene-animate.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="#0af741" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mood-boy animated-icon">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M17 4.5a9 9 0 0 1 3.864 5.89a2.5 2.5 0 0 1 -.29 4.36a9 9 0 0 1 -17.137 0a2.5 2.5 0 0 1 -.29 -4.36a9 9 0 0 1 3.746 -5.81" />
+                <path d="M9.5 16a3.5 3.5 0 0 0 5 0" />
+                <path d="M8.5 2c1.5 1 2.5 3.5 2.5 5" />
+                <path d="M12.5 2c1.5 2 2 3.5 2 5" />
+                <path d="M9 12l.01 0" />
+                <path d="M15 12l.01 0" />
+            </svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Copii</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;">18</span>
+    </a>
+</li>
+
+
+
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href="tematice.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="#880af7" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-photo-circle animated-icon">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M15 8h.01" />
+                <path d="M4 15l4 -4c.928 -.893 2.072 -.893 3 0l5 5" />
+                <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l2 2" />
+                <path d="M3 12a9 9 0 0 0 9 9a9 9 0 0 0 9 -9a9 9 0 0 0 -9 -9a9 9 0 0 0 -9 9" />
+            </svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Diverse</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;">21</span>
+    </a>
+</li>
+
+
+
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href="muzica.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-music animated-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="#f70ab8" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                <path d="M13 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                <path d="M9 17v-13h10v13" />
+                <path d="M9 8h10" />
+            </svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Muzica</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;">16</span>
+    </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+<li class="nav-item">
+    <a class="nav-link" href="radiogratis/radio-online-gratis.htm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="green" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-radio animated-icon">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M14 3l-9.371 3.749a1 1 0 0 0 -.629 .928v11.323a1 1 0 0 0 1 1h14a1 1 0 0 0 1 -1v-11a1 1 0 0 0 -1 -1h-14.5" />
+    <path d="M4 12h16" />
+    <path d="M7 12v-2" />
+    <path d="M17 16v.01" />
+    <path d="M13 16v.01" />
+</svg>
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 1.4rem;;">Radio Online</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;"></span>
+    </a>
+</li>
+
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="hr-text text-primary m-3">Meniu Extra</li>
+
+
+<li class="nav-item">
+    <a class="nav-link" href="ajutor-cum-vezi-tv-online-app.htm"
+ data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="" style="display: flex; align-items: center;">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="#2a6bdb" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-tv-old animated-icon">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                <path d="M16 3l-4 4l-4 -4" />
+                <path d="M15 7v13" />
+                <path d="M18 15v.01" />
+                <path d="M18 12v.01" />
+            </svg>	
+        </span>
+        <span class="nav-link-title" style="flex-grow: 1; font-size: 18px;">Ajutor Tv Online</span>
+        <span class="badge bg-azure-lt" style="margin-left: auto;"></span>
+    </a>
+</li>
+
+
+</ul> 
+</div>
+</div>
+</div>
+</aside>
+</div> 		 <div class="col-lg-10 pt-1"> 
+<div class="page-body mt-1">
+<div class="text-center"> 
+
+🐉 Filme TV Online - Vizioneaza cele mai bune filme online la TV in direct. 🌌 Gaseste filmele preferate si urmareste-le gratuit 🎭  
+
+</div>
+
+<div class="col-12 mt-1">
+
+
+</div>
+<div class="col-12 mt-2">
+<div class="row g-1 mb-2">
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/hro1-s1.htm" title="HR0" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/hro1.webp" alt="HR0"/>
+        </div><div class="col"><div class="font-weight-medium">HR0</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/hro2-s1.htm" title="HR0 2" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/hro2.webp" alt="HR0 2"/>
+        </div><div class="col"><div class="font-weight-medium">HR0 2</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/hro3-s1.htm" title="HR0 3" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/hro3.webp" alt="HR0 3"/>
+        </div><div class="col"><div class="font-weight-medium">HR0 3</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/diva.htm" title="Diva" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/975-diva.webp" alt="Diva"/>
+        </div><div class="col"><div class="font-weight-medium">Diva</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/euforia.htm" title="Happy" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/64530-happy-channel.webp" alt="Happy"/>
+        </div><div class="col"><div class="font-weight-medium">Happy</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/film-cafe.htm" title="Film Cofe" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/965-film-cafe.webp" alt="Film Cofe"/>
+        </div><div class="col"><div class="font-weight-medium">Film Cofe</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/tv100.htm" title="Tv 1ooo" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/1462-tv1000.webp" alt="Tv 1ooo"/>
+        </div><div class="col"><div class="font-weight-medium">Tv 1ooo</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/movie-s1.htm" title="Best Movies" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/best-movies.webp" alt="Best Movies"/>
+        </div><div class="col"><div class="font-weight-medium">Best Movies</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/epic-drama-s1.htm" title="Epic Drama" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/1467-epic-drama-hd.webp" alt="Epic Drama"/>
+        </div><div class="col"><div class="font-weight-medium">Epic Drama</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/amc-s1.htm" title="AMC" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/9640-amc.webp" alt="AMC"/>
+        </div><div class="col"><div class="font-weight-medium">AMC</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/shut1-s1.htm" title="Show 1" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/show1.webp" alt="Show 1"/>
+        </div><div class="col"><div class="font-weight-medium">Show 1</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/shut2-s1.htm" title="Show 2" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/show2.webp" alt="Show 2"/>
+        </div><div class="col"><div class="font-weight-medium">Show 2</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/axn.htm" title="AXN HD" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/4205-axn.webp" alt="AXN HD"/>
+        </div><div class="col"><div class="font-weight-medium">AXN HD</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/axn-black-s1.htm" title="AXN Black" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/1461-axn-black.webp" alt="AXN Black"/>
+        </div><div class="col"><div class="font-weight-medium">AXN Black</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/axn-white-s1.htm" title="AXN White" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/022-AXN_White.webp" alt="AXN White"/>
+        </div><div class="col"><div class="font-weight-medium">AXN White</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/axn-spin.htm" title="AXN Spin" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/1463-axn-spin.webp" alt="AXN Spin"/>
+        </div><div class="col"><div class="font-weight-medium">AXN Spin</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/cmax1-s1.htm" title="Cin3Max" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/cmax1.webp" alt="Cin3Max"/>
+        </div><div class="col"><div class="font-weight-medium">Cin3Max</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/cmax2-s1.htm" title="Cin3Max 2" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/cmax2.webp" alt="Cin3Max 2"/>
+        </div><div class="col"><div class="font-weight-medium">Cin3Max 2</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/bollywood-tv.htm" title="Bollywood TV" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/1127-bollywood-tv.webp" alt="Bollywood TV"/>
+        </div><div class="col"><div class="font-weight-medium">Bollywood TV</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/comedy-central.htm" title="Comedy Central" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/1423-comedy-central.webp" alt="Comedy Central"/>
+        </div><div class="col"><div class="font-weight-medium">Comedy Central</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/tnt-s1.htm" title="Worner" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/tnt-tv.webp" alt="Worner"/>
+        </div><div class="col"><div class="font-weight-medium">Worner</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/bbc-first-live.htm" title="BBC First" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/1549-bbc-first-hd.webp" alt="BBC First"/>
+        </div><div class="col"><div class="font-weight-medium">BBC First</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/rakuten-tv.htm" title="Rakuten TV" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/Rakuten-TV-01.webp" alt="Rakuten TV"/>
+        </div><div class="col"><div class="font-weight-medium">Rakuten TV</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="col-sm-6 col-lg-6">
+  <a class="card card-sm border border-primary card-link" href="ch/ibc-comedy-free.htm" title="IBC COMEDY FREE" style="background-color:  rgba(19, 26, 38, 0.6);">
+    <div class="rounded-1 p-1"><div class="ribbon ribbon-top bg-blue">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 4l0 16" /><path d="M16 4l0 16" /><path d="M4 8l4 0" /><path d="M4 16l4 0" /><path d="M4 12l16 0" /><path d="M16 8l4 0" /><path d="M16 16l4 0" />
+        </svg></div><div class="row g-2 align-items-center"><div class="col-auto">
+          <img class="rounded" width="55" height="55" src="default/webp/7453-ibc-comedy.webp" alt="IBC COMEDY FREE"/>
+        </div><div class="col"><div class="font-weight-medium">IBC COMEDY FREE</div>
+<div class="d-block text-secondary text-truncate mt-n1"></div>
+</div></div></div></a>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div></div></div>
+<div class="page-body mt-2"><div class="col-12 markdown"><p><ul class="nav nav-bordered mb-1"></ul>
+Filme TV Online - Vezi Cele Mai Vizionate Canale de Filme Live, Gratuit pe Orice Dispozitiv. 
+
+Filme TV Online - Intra in lumea filmelor si bucura-te de cele mai bune filme online la TV in direct. Probabil ca vei cauta cel mai placut film, iar cele mai cunoscute canale TV precum Action,FilmBox, Movies etc sunt in topul cautarilor. Dar, dupa cum poti vedea, poti viziona si alte canale TV gratuit.
+
+<strong>cool-tv.net</strong> este o interfață pentru promovarea și dezvoltarea tehnologiei actuale, sunt incluse doar coduri de tip „embed” către diverse fluxuri publice găsite în liberă circulație pe Internet (paginile web ale posturilor TV, google, yahoo, youtube, forumuri și alte motoare de indexare).<ul class="nav nav-bordered mb-1"></ul>
+
+<b>cool-tv.net</b> nu găzduiește niciun fișier de tip streaming, toate materialele de pe site-ul nostru sunt găzduite pe diferite platforme de partajare video sau de streaming video la care accesul este gratuit și necondiționat. De asemenea, site-ul nostru nu percepe nicio taxă pentru vizualizarea materialelor, decizia aparținând exclusiv utilizatorului final dacă dorește sau nu să vadă aceste materiale. Nu ne asumăm nicio responsabilitate dacă linkurile „încorporate” funcționează sau dacă persoana care le-a încărcat deține drepturile de autor asupra acestora. Orice distribuire ilegală pe site-ul nostru poate fi semnalată în secțiunea 
+<a href="contact.htm" data-bs-placement="bottom" data-bs-toggle="tooltip" class="text-decoration-none font-weight-medium text-blue" rel="nofollow noindex">Contact</a>, după studierea paginii <a href="dmca.htm" data-bs-placement="bottom" data-bs-toggle="tooltip" class="text-decoration-none font-weight-medium text-blue" rel="nofollow noindex">DMCA</a>.<ul class="nav nav-bordered mb-1"></ul>
+Interfața modernă și prietenoasă a site-ului nostru face navigarea cât mai ușoară posibilă, permițând utilizatorilor să acceseze cu ușurință canalele lor preferate, să descopere conținut nou și să exploreze diferite categorii. Funcții precum streaming HD, abilitatea de a vă întoarce și viziona emisiunile preferate și accesul pe mai multe dispozitive transformă experiența de vizionare într-o aventură captivantă.
+<ul class="nav nav-bordered mb-1"></ul></p></div></div>
+<footer class="footer footer-transparent d-print-none pt-0 pb-3">
+<div class="container-xl">
+<div class="row text-center align-items-center flex-row-reverse">
+<div class="text-muted">Acest site oferă canale tv care pot fi găsite pe net, nu suntem responsabili pentru calitatea și funcționalitatea lor.</div>
+<div class="col-lg-auto ms-lg-auto">
+<ul class="list-inline mb-0"> 
+<li class="list-inline-item"><a href="contact.htm" class="link-secondary">Contact</a></li> &bull; 
+<li class="list-inline-item"><a href="politica-de-confidentialitate.htm" class="link-secondary">Politica</a></li> &bull; 
+<li class="list-inline-item"><a href="dmca.htm" class="link-secondary">DMCA</a></li> &bull; 
+<li class="list-inline-item"><a href="termeni-si-conditii.htm" class="link-secondary">Termeni</a></li>
+</ul>
+</div>
+<div class="col-12 col-lg-auto mt-2 mt-lg-0">
+<ul class="list-inline list-inline-dots mb-0">
+<li class="list-inline-item">Powered by &copy; cool-tv.net <span id="year"></span></li>
+
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+ 
+<script>
+ window.addEventListener('contextmenu', function (e) { 
+  e.preventDefault(); 
+ }, false);
+ </script>
+
+
+</ul>
+</div>
+</div>
+</div>
+</footer>
+</div>
+
+<script src="Data/Teme/default/js/tabler.min.js" defer></script>
+
+
+
+
 </body>
+
+
 </html>
+Download HTML Source Code
+Page Speed Times
+0.08s
+DNS Lookup: 0.03s (40.6%)
+Initial Connection: 0.00s (1.6%)
+SSL: 0.02s (22.1%)
+Wait: 0.03s (35.3%)
+Content Transfer: 0.00s (0.3%)
+Server Info
+Server: cloudflare
+HTTP Version: 3
+HTTP Status: 200
+Method: GET
+Scheme: HTTPS
+Page Info
+Total size: 45.04 KB
+Characters: 46116
+Words: 5797
+Lines: 857
+HTML Tags: 686
+Generator:
+
+About View Page Source
+Welcome to View Page Source, your go-to digital magnifying glass for diving deep into the heart of any website. Our tool demystifies the web by letting you peek at the underlying code, offering insights into the construction, functionality, and optimization strategies of websites.
+
+
+Simplicity at Its Best
+Enter a website's URL, hit "View Source", and we’ll serve up the website's source code in a neatly formatted, accessible manner. Mobile users rejoice – viewing source code has never been easier, regardless of your device.
+
+Ethical Use Policy
+We champion ethical internet use. While our tool provides access to a wealth of information, including potentially restricted content, we advocate for responsible usage. Your data's security and privacy are paramount, and we ensure they are protected.
+
+SEO Insights
+Delving into source code reveals secrets to boosting your website's search engine visibility. Learn how search engines interpret your site through tags and optimize your content for better rankings. Dive deeper with our specialized SEO guide.
+
+We hope you find View Page Source useful and informative. Try it out now by pasting a URL into the tool above. If you have any feedback or suggestions, please feel free to reach out to us.
+
+
+Expand Your Knowledge
+Useful tools and guides about source code
+
+
+How To Hide The Source Code Of A Website
+How source code works and what you can do to hide and protect the code of your website from anyone trying to steal your work
+
+
+Understanding HTML Source Code for Development and SEO
+What is HTML and what can you do with a website's source code. This guide is an introduction to the world of web development
+
+
+
+How To View HTML Source Code in Different Browsers
+Find out how to see the HTML code of a web page in the most popular browsers on the Internet, without having to install any app or plugin
+
+
+All HTML5 Supported Tags and What They Do: Full Reference
+Reference list of all tags supported by HTML5 and their brief descriptions. This is a highly useful resource for web development and search engine optimization.
+
+
+Exciting VPS Updates to Empower Your Web Exploration
+Discover View Page Source's exciting new features: speed metrics, server info, line wrapping, and UI improvements. Explore websites like never before!
+
+
+Top 10 Source Code Editors for Web Development in 2024
+A source code editor is the most important tool you will use for web development. Here is a guide to the top free and paid editors and IDEs.
+
+Visitor Testimonials
+"A website's source code is one of the first things you check if it appears to be hacked or acting odd. View Page Source makes this step fast and simple. Love it."
+
+
+Gary Lomas
+Cyber Security Expert
+
+"My work involves web design, nothing too technical. But there are times when you find an inspirational design and wonder how they did it. I use this amazing source code viewer to download such pages and learn new ways of displaying content"
+
+
+Wendy Peters
+Web Designer
+
+"I use View Page Source to check the websites I create, just to make sure they work as intended. Highly recommended for any sort of web development."
+
+
+Harold Jay
+Web Developer
+
+Security
+Privacy
+Copyright © 2025 View Page Source. All rights reserved.
+
+Privacy and cookie settings
+Managed by Google. Complies with IAB TCF. CMP ID: 300
