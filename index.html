@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extractor Streamuri Cool eTV</title>
+    <title>Extractor Streamuri TV</title>
 </head>
 <body>
-    <h1>Extractor Streamuri TV</h1>
+    <h1>Extractor Streamuri Cool eTV</h1>
     <button onclick="extractStream()">Extrage Stream</button>
     <p id="result">Aștept extragerea fluxului...</p>
 
     <script>
         function extractStream() {
-            // Elementul player din pagina Cool eTV
-            let playerElement = document.getElementsByName('playerkuk')[0];
+            // Caută elemente posibile pentru player
+            let playerElement = document.querySelector('iframe, video, embed');
             
             if (playerElement) {
-                // Caută URL-ul fluxului video
-                let streamUrl = playerElement.outerHTML.match(/src="(.*?)"/i);
+                let streamUrl = playerElement.src || playerElement.getAttribute('data-src');
                 
-                if (streamUrl && streamUrl[1]) {
+                if (streamUrl) {
                     document.getElementById('result').innerHTML = 
-                        `<strong>URL Stream:</strong> <a href="${streamUrl[1]}" target="_blank">${streamUrl[1]}</a>`;
+                        `<strong>URL Stream:</strong> <a href="${streamUrl}" target="_blank">${streamUrl}</a>`;
                 } else {
-                    document.getElementById('result').innerText = "Nu s-a găsit niciun flux.";
+                    document.getElementById('result').innerText = "Nu s-a găsit URL-ul fluxului.";
                 }
             } else {
                 document.getElementById('result').innerText = "Playerul nu a fost găsit pe această pagină.";
