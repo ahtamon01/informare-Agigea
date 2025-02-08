@@ -3,29 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extractor Streamuri TV</title>
+    <title>Extractor Streamuri Cool eTV</title>
 </head>
 <body>
     <h1>Extractor Streamuri Cool eTV</h1>
     <button onclick="extractStream()">Extrage Stream</button>
-    <p id="result">Aștept extragerea fluxului...</p>
+    <pre id="result">Aștept extragerea fluxului...</pre>
 
     <script>
-        function extractStream() {
-            // Caută elemente posibile pentru player
-            let playerElement = document.querySelector('iframe, video, embed');
-            
-            if (playerElement) {
-                let streamUrl = playerElement.src || playerElement.getAttribute('data-src');
-                
-                if (streamUrl) {
+        async function extractStream() {
+            try {
+                // URL-ul unei pagini cu un post TV de test
+                let url = "https://www.cool-etv.net/ch/example-page.htm";
+
+                // Solicită pagina
+                let response = await fetch(url);
+                let pageText = await response.text();
+
+                // Regex pentru titlu și player
+                let pattern = /<title>(?<NAME>[^~]*?) Online ~.*?<\/title>.*?(?<STREAM><(div|iframe) (name="playerkuk"|class="playerandroid"|class="playerfoxy").*?<\/(div|iframe)>)/is;
+                let match = pageText.match(pattern);
+
+                if (match) {
+                    let postName = match.groups.NAME.trim();
+                    let playerHtml = match.groups.STREAM;
+
+                    // Extrage URL-ul fluxului
+                    let streamUrlMatch = playerHtml.match(/src="(.*?)"/i);
+                    let streamUrl = streamUrlMatch ? streamUrlMatch[1] : "URL indisponibil";
+
+                    // Afișează rezultatul
                     document.getElementById('result').innerHTML = 
-                        `<strong>URL Stream:</strong> <a href="${streamUrl}" target="_blank">${streamUrl}</a>`;
+                        `Post: ${postName}\nURL Stream: ${streamUrl}`;
                 } else {
-                    document.getElementById('result').innerText = "Nu s-a găsit URL-ul fluxului.";
+                    document.getElementById('result').innerText = "Nu s-a găsit niciun flux.";
                 }
-            } else {
-                document.getElementById('result').innerText = "Playerul nu a fost găsit pe această pagină.";
+            } catch (error) {
+                document.getElementById('result').innerText = `Eroare: ${error.message}`;
             }
         }
     </script>
