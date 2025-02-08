@@ -3,45 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extractor Streamuri Cool eTV</title>
+    <title>Player TV</title>
 </head>
 <body>
-    <h1>Extractor Streamuri Cool eTV</h1>
-    <button onclick="extractStream()">Extrage Stream</button>
-    <pre id="result">Aștept extragerea fluxului...</pre>
-
-    <script>
-        async function extractStream() {
-            try {
-                // URL-ul unei pagini cu un post TV de test
-                let url = "https://www.cool-etv.net/ch/example-page.htm";
-
-                // Solicită pagina
-                let response = await fetch(url);
-                let pageText = await response.text();
-
-                // Regex pentru titlu și player
-                let pattern = /<title>(?<NAME>[^~]*?) Online ~.*?<\/title>.*?(?<STREAM><(div|iframe) (name="playerkuk"|class="playerandroid"|class="playerfoxy").*?<\/(div|iframe)>)/is;
-                let match = pageText.match(pattern);
-
-                if (match) {
-                    let postName = match.groups.NAME.trim();
-                    let playerHtml = match.groups.STREAM;
-
-                    // Extrage URL-ul fluxului
-                    let streamUrlMatch = playerHtml.match(/src="(.*?)"/i);
-                    let streamUrl = streamUrlMatch ? streamUrlMatch[1] : "URL indisponibil";
-
-                    // Afișează rezultatul
-                    document.getElementById('result').innerHTML = 
-                        `Post: ${postName}\nURL Stream: ${streamUrl}`;
-                } else {
-                    document.getElementById('result').innerText = "Nu s-a găsit niciun flux.";
-                }
-            } catch (error) {
-                document.getElementById('result').innerText = `Eroare: ${error.message}`;
-            }
-        }
-    </script>
+    <h1>Player Live Stream</h1>
+    <iframe 
+        src="https://ceres1.visionman.cfd/000/anyone.html" 
+        allow="autoplay; fullscreen" 
+        scrolling="no" 
+        frameborder="0" 
+        height="300px" 
+        width="422px" 
+        allowfullscreen>
+    </iframe>
 </body>
 </html>
