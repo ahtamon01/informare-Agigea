@@ -3,18 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player TV</title>
+    <title>Player Live TV</title>
 </head>
 <body>
-    <h1>Player Live Stream</h1>
-    <iframe 
-        src="https://ceres1.visionman.cfd/000/anyone.html" 
-        allow="autoplay; fullscreen" 
-        scrolling="no" 
-        frameborder="0" 
-        height="300px" 
-        width="422px" 
-        allowfullscreen>
-    </iframe>
+    <h1>Player Stream TV</h1>
+    <div id="player"></div>
+
+    <script>
+        // Link inițial din sursă iframe
+        const dataSrc = "https://ceres1.visionman.cfd/000/anyone.html";
+
+        // Verificăm dacă linkul este valid
+        if (dataSrc) {
+            document.getElementById('player').innerHTML = `
+                <iframe 
+                    src="${dataSrc}" 
+                    allow="autoplay; fullscreen" 
+                    scrolling="no" 
+                    frameborder="0" 
+                    height="300px" 
+                    width="422px" 
+                    allowfullscreen>
+                </iframe>
+            `;
+        } else {
+            document.getElementById('player').innerText = "Nu s-a găsit fluxul video.";
+        }
+    </script>
 </body>
 </html>
