@@ -3,41 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Antena 1</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: black;
-        }
-        iframe {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            border: none;
-        }
-    </style>
+    <title>Antena 1 Player</title>
     <script>
-        function openFullscreenAndPlay() {
-            const iframe = document.getElementById('tvPlayer');
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.webkitRequestFullscreen) { // Safari
-                iframe.webkitRequestFullscreen();
-            } else if (iframe.msRequestFullscreen) { // IE11
-                iframe.msRequestFullscreen();
+        // Redirecționează către pagină și încearcă să forțeze fullscreen
+        function openPlayer() {
+            const newWindow = window.open("https://www.cool-etv.net/ch/an1.htm#!", "_blank");
+            if (newWindow) {
+                newWindow.onload = () => {
+                    newWindow.document.body.requestFullscreen?.();
+                };
+            } else {
+                alert("Permite pop-up-urile pentru a continua.");
             }
-            
-            // Trimite comanda de autoplay (dacă e susținut de pagina iframe)
-            iframe.contentWindow.postMessage("play", "*");
         }
+
+        // Deschide player-ul imediat ce pagina este accesată
+        window.onload = openPlayer;
     </script>
 </head>
-<body onload="openFullscreenAndPlay()">
-    <iframe 
-        id="tvPlayer" 
-        src="https://www.cool-etv.net/ch/an1.htm#!" 
-        allow="autoplay; fullscreen" 
-        frameborder="0">
-    </iframe>
+<body>
+    <h1>Se încarcă playerul...</h1>
 </body>
 </html>
