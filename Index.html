@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .safety-images {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .safety-images img {
+            max-width: 100px;
+            margin: 0 10px;
+            border-radius: 8px;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        .deviation-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .deviation-card img {
+            max-width: 100%; /* Adjust image size */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .comment-photo {
+            max-width: 50px; /* Set a fixed size for comment images */
+            height: auto; /* Maintain aspect ratio */
+            margin: 5px 0;
+        }
+
+        .incident-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .comments-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column; /* Stack charts vertically */
+            gap: 20px; /* Space between charts */
+        }
+
+        canvas {
+            height: 300px !important; /* Set a fixed height */
+            width: 100% !important; /* Set to full width */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="images/adm_logo.png" alt="ADM Logistics Logo">
+        <h1>Sistem Management Incidente</h1>
+    </header>
+
+    <div class="container">
+        <!-- Safety Work Wear Images -->
+        <div class="safety-images">
+            <img src="images/safety_workwear1.png" alt="Safety Workwear">
+            <img src="images/safety_workwear2.png" alt="Safety Workwear">
+            <img src="images/safety_workwear3.png" alt="Safety Workwear">
+        </div>
+
+        <!-- Login Section -->
+        <div id="loginSection" class="section">
+            <h2>Autentificare</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" class="form-control" placeholder="Email" required>
+                <input type="password" id="loginPassword" class="form-control" placeholder="Parolă" required>
+                <button type="submit" class="btn btn-primary">Autentificare</button>
+            </form>
+            <p>Nu ai cont? <a href="#" id="showRegister">Creează un cont</a></p>
+        </div>
+
+        <!-- Register Section -->
+        <div id="registerSection" class="section hidden">
+            <h2>Înregistrare Cont Nou</h2>
+            <form id="registerForm">
+                <input type="text" id="registerName" class="form-control" placeholder="Nume Complet" required>
+                <input type="email" id="registerEmail" class="form-control" placeholder="Email" required>
+                <input type="password" id="registerPassword" class="form-control" placeholder="Parolă" required>
+                <button type="submit" class="btn btn-primary">Înregistrare</button>
+            </form>
+            <p>Ai deja cont? <a href="#" id="showLogin">Autentifică-te</a></p>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="section hidden">
+            <h2>Dashboard</h2>
+            <div id="slogan" class="alert alert-success hidden">
+                Lucrăm în siguranță!
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <h3>Incidente Deschise</h3>
+                    <p id="openCount">0</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Incidente Închise</h3>
+                    <p id="closedCount">0</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Top Utilizator</h3>
+                    <p id="topUser">-</p>
+                </div>
+            </div>
+            <button id="openIncidentBtn" class="btn btn-primary">Înregistrează Incident</button>
+            <button id="viewIncidentsBtn" class="btn btn-secondary">Vezi Incidente</button>
+            <button id="logoutBtn" class="btn btn-danger">Deconectare</button>
+
+            <!-- KPI Charts -->
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+                <canvas id="userChart"></canvas>
+            </div>
+        </div>
+
+        <!-- View Incidents Section -->
+        <div id="viewIncidentsSection" class="section hidden">
+            <h2>Lista Incidente</h2>
+            <div id="incidentsList"></div>
+            <button id="backToDashboard" class="btn btn-secondary">Înapoi la Dashboard</button>
+        </div>
+
+        <!-- New Incident Section -->
+        <div id="newIncidentSection" class="section hidden">
+            <h2>Înregistrare Incident Nou</h2>
+            <form id="incidentForm">
+                <div class="form-group">
+                    <label for="zone">Zonă</label>
+                    <input type="text" id="zone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Dată și Oră</label>
+                    <input type="datetime-local" id="date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="severity">Gravitate</label>
+                    <select id="severity" class="form-control" required>
+                        <option value="">Selectează gravitatea</option>
+                        <option value="Scăzută">Scăzută</option>
+                        <option value="Medie">Medie</option>
+                        <option value="Mare">Mare</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Descriere</label>
+                    <textarea id="description" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="photo">Fotografie</label>
+                    <input type="file" id="photo" class="form-control" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Salvează</button>
+                <button type="button" id="cancelIncident" class="btn btn-secondary">Anulează</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Inițializare localStorage
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('incidents')) {
+            localStorage.setItem('incidents', JSON.stringify([]));
+        }
+
+        // Variabile globale
+        let currentUser = null;
+
+        // Funcții utilitare
+        function loadUsers() {
+            return JSON.parse(localStorage.getItem('users') || '[]');
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function loadIncidents() {
+            return JSON.parse(localStorage.getItem('incidents') || '[]');
+        }
+
+        function saveIncidents(incidents) {
+            localStorage.setItem('incidents', JSON.stringify(incidents));
+        }
+
+        // Navigation Event Listeners
+        document.getElementById('showRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('registerSection').classList.remove('hidden');
+        });
+
+        document.getElementById('showLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        });
+
+        // Register Form Submit
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const name = document.getElementById('registerName').value;
+
+            const users = loadUsers();
+            if (users.find(user => user.email === email)) {
+                alert('Acest email este deja înregistrat!');
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                email,
+                password,
+                name,
+                dateCreated: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            saveUsers(users);
+            alert('Cont creat cu succes! Te poți autentifica acum.');
+            document.getElementById('registerForm').reset();
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        });
+
+        // Login Form Submit
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const users = loadUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (!user) {
+                alert('Email sau parolă incorectă!');
+                return;
+            }
+
+            currentUser = user;
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+
+            // Show the slogan
+            document.getElementById('slogan').classList.remove('hidden');
+            updateDashboard();
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        });
+
+        // Navigation
+        document.getElementById('openIncidentBtn').addEventListener('click', () => {
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('newIncidentSection').classList.remove('hidden');
+        });
+
+        document.getElementById('viewIncidentsBtn').addEventListener('click', () => {
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('viewIncidentsSection').classList.remove('hidden');
+            renderIncidents();
+        });
+
+        document.getElementById('cancelIncident').addEventListener('click', () => {
+            document.getElementById('newIncidentSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+        });
+
+        document.getElementById('backToDashboard').addEventListener('click', () => {
+            document.getElementById('viewIncidentsSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            updateDashboard();
+        });
+
+        // New Incident Form Submit
+        document.getElementById('incidentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const zone = document.getElementById('zone').value;
+            const date = document.getElementById('date').value;
+            const severity = document.getElementById('severity').value;
+            const description = document.getElementById('description').value;
+            const photoFile = document.getElementById('photo').files[0];
+
+            if (!photoFile) {
+                alert('Te rugăm să atașezi o fotografie!');
+                return;
+            }
+
+            // Convert photo to base64
+            const base64Photo = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(photoFile);
+            });
+
+            const incidents = loadIncidents();
+            const newIncident = {
+                id: Date.now(),
+                zone,
+                date,
+                severity,
+                description,
+                photo: base64Photo,
+                status: 'Deschis',
+                openedBy: currentUser.name,
+                openedDate: new Date().toISOString(),
+                comments: []
+            };
+
+            incidents.push(newIncident);
+            saveIncidents(incidents);
+            alert('Incident înregistrat cu succes!');
+            document.getElementById('incidentForm').reset();
+            document.getElementById('newIncidentSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            updateDashboard();
+        });
+
+        // Render Incidents List
+        function renderIncidents() {
+            const incidents = loadIncidents();
+            const incidentsList = document.getElementById('incidentsList');
+            incidentsList.innerHTML = '';
+
+            incidents.forEach(incident => {
+                const div = document.createElement('div');
+                div.className = 'deviation-card';
+                div.id = `incident-${incident.id}`;
+
+                let commentsHtml = '';
+                if (incident.comments.length > 0) {
+                    commentsHtml = `
+                        <div class="comments-section">
+                            <h4>Comentarii:</h4>
+                            ${incident.comments.map(comment => `
+                                <div class="comment">
+                                    <strong>${comment.user}</strong> 
+                                    <small>(${new Date(comment.date).toLocaleString()})</small>
+                                    <p>${comment.text}</p>
+                                    ${comment.photo ? `<img src="${comment.photo}" alt="Fotografie comentariu" class="comment-photo">` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = `
+                    <h3>Incident #${incident.id}</h3>
+                    <div class="incident-details">
+                        <p><strong>Zonă:</strong> ${incident.zone}</p>
+                        <p><strong>Data:</strong> ${new Date(incident.date).toLocaleString()}</p>
+                        <p><strong>Gravitate:</strong> ${incident.severity}</p>
+                        <p><strong>Descriere:</strong> ${incident.description}</p>
+                        <p><strong>Status:</strong> ${incident.status}</p>
+                        <p><strong>Deschis de:</strong> ${incident.openedBy}</p>
+                        <img src="${incident.photo}" alt="Fotografie incident">
+                    </div>
+                    ${commentsHtml}
+                    <div class="incident-actions">
+                        <button onclick="closeIncident(${incident.id})" class="btn btn-success">Închide Incident</button>
+                        <button onclick="deleteIncident(${incident.id})" class="btn btn-danger">Șterge Incident</button>
+                    </div>
+                `;
+
+                incidentsList.appendChild(div);
+            });
+        }
+
+        // Delete Incident Function
+        function deleteIncident(id) {
+            const incidents = loadIncidents();
+            const updatedIncidents = incidents.filter(incident => incident.id !== id);
+            saveIncidents(updatedIncidents);
+            renderIncidents(); // Refresh the list after deletion
+            updateDashboard(); // Update dashboard statistics
+        }
+
+        // Close Incident Function
+        function closeIncident(id) {
+            const incidents = loadIncidents();
+            const incident = incidents.find(inc => inc.id === id);
+
+            if (!incident || incident.status === 'Închis') return;
+
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `
+                <h4>Închide Incident</h4>
+                <textarea id="close-comment-${id}" class="form-control" 
+                    placeholder="Adaugă un comentariu de închidere" required></textarea>
+                <input type="file" id="close-photo-${id}" class="form-control" accept="image/*">
+                <button onclick="submitClose(${id})" class="btn btn-primary">Confirmă Închiderea</button>
+            `;
+
+            const actionsDiv = document.querySelector(`#incident-${id} .incident-actions`);
+            actionsDiv.innerHTML = '';
+            actionsDiv.appendChild(div);
+        }
+
+        // Submit Close
+        async function submitClose(id) {
+            const commentText = document.getElementById(`close-comment-${id}`).value;
+            const photoFile = document.getElementById(`close-photo-${id}`).files[0];
+
+            if (!commentText) {
+                alert('Te rugăm să adaugi un comentariu de închidere!');
+                return;
+            }
+
+            const incidents = loadIncidents();
+            const incident = incidents.find(inc => inc.id === id);
+
+            incident.status = 'Închis';
+            incident.closedBy = currentUser.name;
+            incident.closedDate = new Date().toISOString();
+            incident.comments.push({
+                text: commentText,
+                user: currentUser.name,
+                date: new Date().toISOString(),
+            });
+
+            // Convert photo to base64 if provided
+            if (photoFile) {
+                const base64Photo = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(photoFile);
+                });
+                incident.comments[incident.comments.length - 1].photo = base64Photo;
+            }
+
+            saveIncidents(incidents);
+            renderIncidents();
+            updateDashboard();
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const incidents = loadIncidents();
+
+            const openIncidents = incidents.filter(inc => inc.status === 'Deschis');
+            const closedIncidents = incidents.filter(inc => inc.status === 'Închis');
+
+            document.getElementById('openCount').textContent = openIncidents.length;
+            document.getElementById('closedCount').textContent = closedIncidents.length;
+
+            const userCounts = {};
+            incidents.forEach(inc => {
+                userCounts[inc.openedBy] = (userCounts[inc.openedBy] || 0) + 1;
+            });
+
+            const topUser = Object.entries(userCounts)
+                .sort((a, b) => b[1] - a[1])[0];
+
+            document.getElementById('topUser').textContent =
+                topUser ? `${topUser[0]} (${topUser[1]})` : '-';
+
+            updateCharts(incidents);
+        }
+
+        // Update Charts
+        function updateCharts(incidents) {
+            // Status Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const openCount = incidents.filter(inc => inc.status === 'Deschis').length;
+            const closedCount = incidents.filter(inc => inc.status === 'Închis').length;
+
+            new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Deschise', 'Închise'],
+                    datasets: [{
+                        data: [openCount, closedCount],
+                        backgroundColor: ['#007bff', '#28a745']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribuția Incidentelor'
+                        }
+                    }
+                }
+            });
+
+            // User Activity Chart
+            const userCtx = document.getElementById('userChart').getContext('2d');
+            const userStats = {};
+
+            incidents.forEach(inc => {
+                userStats[inc.openedBy] = (userStats[inc.openedBy] || 0) + 1;
+            });
+
+            new Chart(userCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(userStats),
+                    datasets: [{
+                        label: 'Incidente Raportate',
+                        data: Object.values(userStats),
+                        backgroundColor: '#007bff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Activitate Utilizatori'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Check for logged in user on page load
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('slogan').classList.remove('hidden'); // Show slogan on login
+            updateDashboard();
+        }
+    </script>
+</body>
+
+</html>
