@@ -1,676 +1,158 @@
 <!DOCTYPE html>
 <html lang="ro">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incident Management System</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Raportare și Perete Deviații</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            min-height: 100vh;
-        }
-
-        header {
-            background-color: #007bff;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .stat-box {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .stat-box h3 {
-            margin: 0 0 10px 0;
-            color: #007bff;
-        }
-
-        .stat-box p {
-            font-size: 24px;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: 20px 0;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .navigation {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            justify-content: center;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .deviation-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            background: white;
-        }
-
-        .deviation-card img {
-            max-width: 300px;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-
-        .comments-section {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-        }
-
-        .chart-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .alert {
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-container, .deviation-list { display: none; }
+        .form-container.active, .deviation-list.active { display: block; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; }
+        .form-group button { padding: 10px 20px; background-color: #4caf50; color: white; border: none; cursor: pointer; }
+        .form-group button:hover { background-color: #45a049; }
+        .navigate-button { margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        .navigate-button:hover { background-color: #0056b3; }
+        .deviation-item { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
+        .deviation-item img { max-width: 100px; }
+        .deviation-item button { background-color: red; color: white; border: none; padding: 10px; cursor: pointer; }
+        .deviation-item button:hover { background-color: darkred; }
+        .back-button { padding: 10px 20px; background-color: #4caf50; color: white; border: none; cursor: pointer; }
+        .back-button:hover { background-color: #45a049; }
     </style>
 </head>
-
 <body>
-    <header>
-        <h1>Sistem Management Incidente</h1>
-    </header>
 
-    <div class="container">
-        <!-- Login Section -->
-        <div id="loginSection" class="section">
-            <h2>Autentificare</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Parolă</label>
-                    <input type="password" id="loginPassword" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Autentificare</button>
-            </form>
-            <p>Nu ai cont? <a href="#" id="showRegister">Creează un cont</a></p>
-        </div>
-
-        <!-- Register Section -->
-        <div id="registerSection" class="section hidden">
-            <h2>Înregistrare Cont Nou</h2>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="registerName">Nume Complet</label>
-                    <input type="text" id="registerName" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerEmail">Email</label>
-                    <input type="email" id="registerEmail" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Parolă</label>
-                    <input type="password" id="registerPassword" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Înregistrare</button>
-            </form>
-            <p>Ai deja cont? <a href="#" id="showLogin">Autentifică-te</a></p>
-        </div>
-
-        <!-- Dashboard Section -->
-        <div id="dashboardSection" class="section hidden">
-            <div class="stats-container">
-                <div class="stat-box">
-                    <h3>Incidente Deschise</h3>
-                    <p id="openCount">0</p>
-                </div>
-                <div class="stat-box">
-                    <h3>Incidente Închise</h3>
-                    <p id="closedCount">0</p>
-                </div>
-                <div class="stat-box">
-                    <h3>Top Utilizator</h3>
-                    <p id="topUser">-</p>
-                </div>
+    <!-- Formularul de înregistrare deviație -->
+    <div class="form-container active" id="formContainer">
+        <h2>Raportează o Deviație</h2>
+        <form id="deviationForm">
+            <div class="form-group">
+                <label for="title">Titlu</label>
+                <input type="text" id="title" required>
             </div>
-
-            <div class="navigation">
-                <button id="openIncidentBtn" class="btn btn-primary">Înregistrează Incident</button>
-                <button id="viewIncidentsBtn" class="btn btn-secondary">Vezi Incidente</button>
-                <button id="logoutBtn" class="btn btn-danger">Deconectare</button>
+            <div class="form-group">
+                <label for="description">Descriere</label>
+                <textarea id="description" required></textarea>
             </div>
-
-            <div class="chart-container">
-                <canvas id="statusChart"></canvas>
-                <canvas id="userChart"></canvas>
+            <div class="form-group">
+                <label for="type">Tip Deviație</label>
+                <select id="type" required>
+                    <option value="mediu">Mediu</option>
+                    <option value="safety">Siguranță</option>
+                    <option value="proces">Proces</option>
+                    <option value="calitate">Calitate</option>
+                    <option value="performanta">Performanță</option>
+                </select>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="zone">Zona Deviației</label>
+                <input type="text" id="zone" required>
+            </div>
+            <div class="form-group">
+                <label for="assignedTo">Atribuit către</label>
+                <select id="assignedTo" required>
+                    <option value="electrician">Electrician</option>
+                    <option value="coordinator">Coordonator</option>
+                    <option value="shiftLeader">Șef de schimb</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="photo">Atașează Poză</label>
+                <input type="file" id="photo" accept="image/*">
+            </div>
+            <div class="form-group">
+                <button type="submit">Înregistrează Deviația</button>
+            </div>
+        </form>
+        <button class="navigate-button" onclick="showDeviationList()">Vezi Peretele Deviațiilor</button>
+    </div>
 
-        <!-- New Incident Section -->
-        <div id="newIncidentSection" class="section hidden">
-            <h2>Înregistrare Incident Nou</h2>
-            <form id="incidentForm">
-                <div class="form-group">
-                    <label for="zone">Zonă</label>
-                    <input type="text" id="zone" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="date">Dată și Oră</label>
-                    <input type="datetime-local" id="date" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="severity">Gravitate</label>
-                    <select id="severity" class="form-control" required>
-                        <option value="">Selectează gravitatea</option>
-                        <option value="Scăzută">Scăzută</option>
-                        <option value="Medie">Medie</option>
-                        <option value="Mare">Mare</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="description">Descriere</label>
-                    <textarea id="description" class="form-control" rows="4" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="photo">Fotografie</label>
-                    <input type="file" id="photo" class="form-control" accept="image/*" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Salvează</button>
-                <button type="button" id="cancelIncident" class="btn btn-secondary">Anulează</button>
-            </form>
-        </div>
-
-        <!-- View Incidents Section -->
-        <div id="viewIncidentsSection" class="section hidden">
-            <h2>Lista Incidente</h2>
-            <div id="incidentsList"></div>
-            <button id="backToDashboard" class="btn btn-secondary">Înapoi la Dashboard</button>
-        </div>
+    <!-- Peretele deviațiilor -->
+    <div class="deviation-list" id="deviationList">
+        <h2>Peretele Deviațiilor</h2>
+        <button class="back-button" onclick="showForm()">Înapoi la Formularul de Raportare</button>
+        <div id="deviationItems"></div>
     </div>
 
     <script>
-        // Inițializare localStorage
-        if (!localStorage.getItem('users')) {
-            localStorage.setItem('users', JSON.stringify([]));
-        }
-        if (!localStorage.getItem('incidents')) {
-            localStorage.setItem('incidents', JSON.stringify([]));
-        }
+        const deviationData = [];
 
-        // Variabile globale
-        let currentUser = null;
-
-        // Funcții utilitare
-        function loadUsers() {
-            return JSON.parse(localStorage.getItem('users') || '[]');
+        // Funcție pentru a arăta formularul
+        function showForm() {
+            document.getElementById('formContainer').classList.add('active');
+            document.getElementById('deviationList').classList.remove('active');
         }
 
-        function saveUsers(users) {
-            localStorage.setItem('users', JSON.stringify(users));
+        // Funcție pentru a arăta peretele deviațiilor
+        function showDeviationList() {
+            document.getElementById('formContainer').classList.remove('active');
+            document.getElementById('deviationList').classList.add('active');
+            loadDeviations();
         }
 
-        function loadIncidents() {
-            return JSON.parse(localStorage.getItem('incidents') || '[]');
-        }
+        // Funcție pentru a încărca deviațiile
+        function loadDeviations() {
+            const deviationItems = document.getElementById('deviationItems');
+            deviationItems.innerHTML = '';
 
-        function saveIncidents(incidents) {
-            localStorage.setItem('incidents', JSON.stringify(incidents));
-        }
-
-        // Navigation Event Listeners
-        document.getElementById('showRegister').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('registerSection').classList.remove('hidden');
-        });
-
-        document.getElementById('showLogin').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('registerSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
-        });
-
-        // Register Form Submit
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const name = document.getElementById('registerName').value;
-
-            if (password.length < 6) {
-                alert('Parola trebuie să aibă cel puțin 6 caractere!');
-                return;
-            }
-
-            const users = loadUsers();
-            if (users.find(user => user.email === email)) {
-                alert('Acest email este deja înregistrat!');
-                return;
-            }
-
-            const newUser = {
-                id: Date.now(),
-                email,
-                password,
-                name,
-                dateCreated: new Date().toISOString()
-            };
-
-            users.push(newUser);
-            saveUsers(users);
-
-            alert('Cont creat cu succes! Te poți autentifica acum.');
-            document.getElementById('registerForm').reset();
-            document.getElementById('registerSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
-        });
-
-        // Login Form Submit
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            const users = loadUsers();
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (!user) {
-                alert('Email sau parolă incorectă!');
-                return;
-            }
-
-            currentUser = user;
-            document.getElementById('loginForm').reset();
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            updateDashboard();
-        });
-
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            currentUser = null;
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
-        });
-
-        // Navigation
-        document.getElementById('openIncidentBtn').addEventListener('click', () => {
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('newIncidentSection').classList.remove('hidden');
-        });
-
-        document.getElementById('viewIncidentsBtn').addEventListener('click', () => {
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('viewIncidentsSection').classList.remove('hidden');
-            renderIncidents();
-        });
-
-        document.getElementById('cancelIncident').addEventListener('click', () => {
-            document.getElementById('newIncidentSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-        });
-
-        document.getElementById('backToDashboard').addEventListener('click', () => {
-            document.getElementById('viewIncidentsSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            updateDashboard();
-        });
-
-        // New Incident Form Submit
-        document.getElementById('incidentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const zone = document.getElementById('zone').value;
-            const date = document.getElementById('date').value;
-            const severity = document.getElementById('severity').value;
-            const description = document.getElementById('description').value;
-            const photoFile = document.getElementById('photo').files[0];
-
-            if (!photoFile) {
-                alert('Te rugăm să atașezi o fotografie!');
-                return;
-            }
-
-            // Convert photo to base64
-            const base64Photo = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.readAsDataURL(photoFile);
-            });
-
-            const incidents = loadIncidents();
-            const newIncident = {
-                id: Date.now(),
-                zone,
-                date,
-                severity,
-                description,
-                photo: base64Photo,
-                status: 'Deschis',
-                openedBy: currentUser.name,
-                openedDate: new Date().toISOString(),
-                comments: []
-            };
-
-            incidents.push(newIncident);
-            saveIncidents(incidents);
-
-            alert('Incident înregistrat cu succes!');
-            document.getElementById('incidentForm').reset();
-            document.getElementById('newIncidentSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            updateDashboard();
-        });
-
-        // Render Incidents List
-        function renderIncidents() {
-            const incidents = loadIncidents();
-            const incidentsList = document.getElementById('incidentsList');
-            incidentsList.innerHTML = '';
-
-            incidents.forEach(incident => {
-                const div = document.createElement('div');
-                div.className = 'deviation-card';
-                div.id = `incident-${incident.id}`;
-
-                let commentsHtml = '';
-                if (incident.comments.length > 0) {
-                    commentsHtml = `
-                        <div class="comments-section">
-                            <h4>Comentarii:</h4>
-                            ${incident.comments.map(comment => `
-                                <div class="comment">
-                                    <strong>${comment.user}</strong> 
-                                    <small>(${new Date(comment.date).toLocaleString()})</small>
-                                    <p>${comment.text}</p>
-                                    ${comment.photo ? `<img src="${comment.photo}" alt="Fotografie comentariu" class="comment-photo">` : ''}
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                }
-
-                const closeButton = incident.status === 'Deschis'
-                    ? `<button onclick="closeIncident(${incident.id})" class="btn btn-success">Închide Incident</button>`
-                    : '';
-
-                div.innerHTML = `
-                    <h3>Incident #${incident.id}</h3>
-                    <div class="incident-details">
-                        <p><strong>Zonă:</strong> ${incident.zone}</p>
-                        <p><strong>Data:</strong> ${new Date(incident.date).toLocaleString()}</p>
-                        <p><strong>Gravitate:</strong> ${incident.severity}</p>
-                        <p><strong>Descriere:</strong> ${incident.description}</p>
-                        <p><strong>Status:</strong> ${incident.status}</p>
-                        <p><strong>Deschis de:</strong> ${incident.openedBy}</p>
-                        ${incident.closedBy ? `<p><strong>Închis de:</strong> ${incident.closedBy}</p>` : ''}
-                        ${incident.closedDate ? `<p><strong>Data închiderii:</strong> ${new Date(incident.closedDate).toLocaleString()}</p>` : ''}
-                        <img src="${incident.photo}" alt="Fotografie incident">
-                    </div>
-                    ${commentsHtml}
-                    <div class="incident-actions">
-                        ${closeButton}
-                    </div>
+            deviationData.forEach((deviation, index) => {
+                const deviationItem = document.createElement('div');
+                deviationItem.className = 'deviation-item';
+                deviationItem.innerHTML = `
+                    <h3>${deviation.title}</h3>
+                    <p><strong>Descriere:</strong> ${deviation.description}</p>
+                    <p><strong>Tip:</strong> ${deviation.type}</p>
+                    <p><strong>Zona:</strong> ${deviation.zone}</p>
+                    <p><strong>Atribuit către:</strong> ${deviation.assignedTo}</p>
+                    <p><strong>Data deschiderii:</strong> ${deviation.date}</p>
+                    ${deviation.photo ? `<img src="${deviation.photo}" alt="Poză">` : ''}
+                    <button onclick="closeDeviation(${index})">Închide</button>
                 `;
-
-                incidentsList.appendChild(div);
+                deviationItems.appendChild(deviationItem);
             });
         }
 
-        // Close Incident
-        function closeIncident(id) {
-            const incidents = loadIncidents();
-            const incident = incidents.find(inc => inc.id === id);
-
-            if (!incident || incident.status === 'Închis') return;
-
-            const div = document.createElement('div');
-            div.className = 'form-group';
-            div.innerHTML = `
-                <h4>Închide Incident</h4>
-                <textarea id="close-comment-${id}" class="form-control" 
-                    placeholder="Adaugă un comentariu de închidere" required></textarea>
-                <input type="file" id="close-photo-${id}" class="form-control" accept="image/*">
-                <button onclick="submitClose(${id})" class="btn btn-primary">Confirmă Închiderea</button>
-            `;
-
-            const actionsDiv = document.querySelector(`#incident-${id} .incident-actions`);
-            actionsDiv.innerHTML = '';
-            actionsDiv.appendChild(div);
+        // Funcție pentru a închide deviația
+        function closeDeviation(index) {
+            // Poți modifica această funcție pentru a actualiza deviația ca închisă, dacă vrei
+            alert(`Deviația "${deviationData[index].title}" a fost închisă!`);
+            deviationData.splice(index, 1);
+            loadDeviations();
         }
 
-        // Submit Close
-        async function submitClose(id) {
-            const commentText = document.getElementById(`close-comment-${id}`).value;
-            const photoFile = document.getElementById(`close-photo-${id}`).files[0];
+        // Evenimentul de submit al formularului
+        document.getElementById('deviationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-            if (!commentText) {
-                alert('Te rugăm să adaugi un comentariu de închidere!');
-                return;
-            }
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const type = document.getElementById('type').value;
+            const zone = document.getElementById('zone').value;
+            const assignedTo = document.getElementById('assignedTo').value;
+            const photo = document.getElementById('photo').files[0];
+            const date = new Date().toLocaleString();
 
-            const incidents = loadIncidents();
-            const incident = incidents.find(inc => inc.id === id);
+            const newDeviation = {
+                title,
+                description,
+                type,
+                zone,
+                assignedTo,
+                photo: photo ? URL.createObjectURL(photo) : null,
+                date
+            };
 
-            incident.status = 'Închis';
-            incident.closedBy = currentUser.name;
-            incident.closedDate = new Date().toISOString();
-            incident.comments.push({
-                text: commentText,
-                user: currentUser.name,
-                date: new Date().toISOString(),
-            });
+            deviationData.push(newDeviation);
+            alert('Deviația a fost înregistrată!');
 
-            // Convert photo to base64 if provided
-            if (photoFile) {
-                const base64Photo = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.readAsDataURL(photoFile);
-                });
-                incident.comments[incident.comments.length - 1].photo = base64Photo;
-            }
-
-            saveIncidents(incidents);
-            renderIncidents();
-            updateDashboard();
-        }
-
-        // Update Dashboard
-        function updateDashboard() {
-            const incidents = loadIncidents();
-
-            const openIncidents = incidents.filter(inc => inc.status === 'Deschis');
-            const closedIncidents = incidents.filter(inc => inc.status === 'Închis');
-
-            document.getElementById('openCount').textContent = openIncidents.length;
-            document.getElementById('closedCount').textContent = closedIncidents.length;
-
-            const userCounts = {};
-            incidents.forEach(inc => {
-                userCounts[inc.openedBy] = (userCounts[inc.openedBy] || 0) + 1;
-            });
-
-            const topUser = Object.entries(userCounts)
-                .sort((a, b) => b[1] - a[1])[0];
-
-            document.getElementById('topUser').textContent =
-                topUser ? `${topUser[0]} (${topUser[1]})` : '-';
-
-            updateCharts(incidents);
-        }
-
-        // Update Charts
-        function updateCharts(incidents) {
-            // Status Chart
-            const statusCtx = document.getElementById('statusChart').getContext('2d');
-            const openCount = incidents.filter(inc => inc.status === 'Deschis').length;
-            const closedCount = incidents.filter(inc => inc.status === 'Închis').length;
-
-            new Chart(statusCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Deschise', 'Închise'],
-                    datasets: [{
-                        data: [openCount, closedCount],
-                        backgroundColor: ['#007bff', '#28a745']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Distribuția Incidentelor'
-                        }
-                    }
-                }
-            });
-
-            // User Activity Chart
-            const userCtx = document.getElementById('userChart').getContext('2d');
-            const userStats = {};
-
-            incidents.forEach(inc => {
-                userStats[inc.openedBy] = (userStats[inc.openedBy] || 0) + 1;
-            });
-
-            new Chart(userCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(userStats),
-                    datasets: [{
-                        label: 'Incidente Raportate',
-                        data: Object.values(userStats),
-                        backgroundColor: '#007bff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Activitate Utilizatori'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Check for logged in user on page load
-        const savedUser = localStorage.getItem('currentUser');
-        if (savedUser) {
-            currentUser = JSON.parse(savedUser);
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            updateDashboard();
-        }
+            // Resetează formularul
+            document.getElementById('deviationForm').reset();
+            showDeviationList();  // Mergi direct la perete după înregistrare
+        });
     </script>
-</body>
 
+</body>
 </html>
